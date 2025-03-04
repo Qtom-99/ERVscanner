@@ -41,4 +41,11 @@ Required Files
 5BED file of ERV regions obtained from DFAM
 6A newline-separated list of alternative chromosomes in the reference genome of the organism to be analyzed
 
-Required tools and
+Required Tools and Environment
+Python3
+bedtools 2.27.1
+samtools 1.20 or higher
+bwa 
+
+Notes
+The threshold argument for filtering is not a percentage, but a ratio.
