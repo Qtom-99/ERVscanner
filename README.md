@@ -7,6 +7,15 @@ Each insertion is grouped in your_datapath/vcf and your_datapath/inMR/vcf, and t
 
 ERVscanner consists of seven shell scripts, which should be run concequtively.
 
+## Required Tools and Environment
+Python3
+bedtools 2.27.1
+samtools 1.20 or higher
+bwa 
+
+
+## Input files
+
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
@@ -17,6 +26,8 @@ Before you start to run the pipeline, you have to prepare the following files fo
 4. Line-delimited list of all samples
 5. BED file of ERV regions obtained from DFAM
 6. A newline-separated list of alternative chromosomes in the reference genome of the organism to be analyzed
+
+## Description of each shell script
 
 1. `mkdir.sh`
    If you run this shell script in your working directory, it will generate nessesary directories. The 
@@ -36,7 +47,8 @@ Before you start to run the pipeline, you have to prepare the following files fo
 1. Pipeline6
   process9 Creation of VCF
 
-How to use
+## How to run
+
 First, create the directory where the data will be placed in advance with .
 Pipeline1 and add_pipe5 can be run in parallel by dividing samples.
 Pipeline 2 is a merging process and should be executed after pipeline 1 has been completed for all samples.
@@ -47,11 +59,6 @@ Pipeline 6 is a merging process and should be executed after Pipeline 5 or add_p
 
 
 
-Required Tools and Environment
-Python3
-bedtools 2.27.1
-samtools 1.20 or higher
-bwa 
 
 Notes
 The threshold argument for filtering is not a percentage, but a ratio.
