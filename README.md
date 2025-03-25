@@ -8,24 +8,28 @@ Each insertion is grouped in your_datapath/vcf and your_datapath/inMR/vcf, and t
 ERVscanner consists of seven shell scripts, which should be run concequtively.
 
 ## Required Tools and Environment
-Python3
-bedtools 2.27.1
-samtools 1.20 or higher
-bwa 
-
+- Unix-like operationg system
+- Python3
+- bedtools 2.27.1
+- samtools 1.20 or higher
+- bwa 
 
 ## Input files
 
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
-2. Tab-separated DFAM_ERV dictionary (You can copy and paste the filtered content of the screen as https://dfam.org/browse is.)
+2. Tab-separated DFAM_ERV dictionary text file you are focosing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
+```
     #Accession Name Classification Clades Description Length
-    #DF000001893 LTRIS2 ERV1 Mus Mouse subfamily of LTR retrotransposons 564
-3. Multifaster file to identify ERVs (ALU, LINE, etc. should be included)
-4. Line-delimited list of all samples
+    DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
+    DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
+```
+3. Multi fasta file of repeat sequences. This file could include all non-target repeat sequences such as ALU and LINE. Including non-ERV sequences decrease the false-positive rate.
+4. Line-delimited list of all samples (sample list file)
 5. BED file of ERV regions obtained from DFAM
-6. A newline-separated list of alternative chromosomes in the reference genome of the organism to be analyzed
+6. Reference genome sequence
+7. A line-separated list of alternative chromosomes in the reference genome of the organism to be analyzed
 
 ## Description of each shell script
 
