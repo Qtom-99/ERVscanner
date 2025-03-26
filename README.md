@@ -49,6 +49,10 @@ Before you start to run the pipeline, you have to prepare the following files fo
 1. Reference genome sequence (`<REF_GENOME>` file)
 1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
+#### How to prepare <QUERY_BED> and <ALL_REPEAT_FASTA>
+
+Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](dfam.org/releases/Dfam_3.8/annotations/))
+
 ## Description of each shell script
 
 1. `mkdir.sh`
