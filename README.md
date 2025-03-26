@@ -39,14 +39,14 @@ Before you start to run the pipeline, you have to prepare the following files fo
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
    - Estimation of insertion position Extract reads that map to non-ERV regions
    - Creating fastq file of RERVreads Extract reads mapped to ERV
-3. `remapping_reads.sh`
+3. `remap_reads.sh`
    - Merge and map fastqs Reads attached to ERVs and map them back to the database
    - Create list of insert positions
 4. `merge_loci.sh`
    - Matching each sample's insertions with position IDs
-5. `filtering_loci.sh`
+5. `filter_loci.sh`
    - Filtering data by insertion sequence estimation, create cross table of 01
-6. `genotyping_ins.sh`, add_pipe5
+6. `genotype_ins.sh`, add_pipe5
    - Genotyping insetions using the information of boundary-overlapping reads
 7. `make_vcf.sh`
    - Creation of final output in VCF file format
