@@ -1,11 +1,30 @@
 # ERVscanner
 A data analysis pipeline to estimate ERV insertion based on short-read sequence data in a fast and efficient way.
 ]
-ERVscanner is a pipeline to estimate non-reference ERV insertions based on short-read whole genome sequence data.
-The pipeline consists of two parallel workflows, one for detecting insertions within annotated repeat regions (MRs) and one for detecting insertions outside MRs. 
-The genotyped VCF file of insertions outside of MRs is output in `<DATA_PATH>/vcf` and the genotyped VCF file of insertions within MRs is output in `<DATA_PATH>/inMR/vcf`. In these VCF files, the flag `MI` tag in the INFO field was added to distinguish these two output. You can merge these files using tools such as `bcftools` or our in-house `merge_vcf.py` script.
+ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retrovirus) insertions using short-read whole-genome sequencing data.
 
-ERVscanner consists of seven shell scripts, which should be run concequtively. Some process could be parallelized to increase speed.
+The pipeline consists of two parallel workflows:
+
+1. One for detecting insertions within annotated repeat regions (MRs), and
+
+1. One for detecting insertions outside MRs.
+
+The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
+
+To detect insertions within MRs, you must repeat the pipeline with the following modifications:
+
+Replace `filter_reads.sh` with `filter_reads_MR.sh`
+
+Replace `genotype_ins.sh` with `genotype_ins_MR.sh`
+
+Change the `<DATA_PATH>` directory accordingly
+Then, rerun the pipeline from the beginning.
+
+Detecting insertions in MRs is more challenging due to the repetitive nature of these regions, leading to a higher false-positive rate. This is why we separated the workflow.
+
+To differentiate between the two output types, `MI` tag is added to the `INFO` field of the VCF files. You can merge the two VCF files using tools such as bcftools or our in-house script, `merge_vcf.py`.
+
+ERVscanner is composed of several shell scripts stored in the `pipeline` directory. These scripts should be executed consecutively. Some steps can be parallelized to improve performance.
 
 ## Required Tools and Environment
 - Unix-like operationg system, bash
@@ -26,12 +45,12 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
 3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
-3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
-4. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
-5. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
-6. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
-7. Reference genome sequence (`<REF_GENOME>` file)
-8. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
+4. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
+5. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
+6. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
+7. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
+8. Reference genome sequence (`<REF_GENOME>` file)
+9. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
 ## Description of each shell script
 
