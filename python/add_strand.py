@@ -9,7 +9,7 @@ def main():
     file1_path = sys.argv[1]
     file2_path = sys.argv[2]
 
-    # ファイル２を読み込み、4列目のリード名（"/"以降を除去）をキーに、6列目（strand）を辞書に登録
+    # # Read file2 and create a dictionary using the 4th column (read name without the part after "/") as the key　and the 6th column (strand) as the value.
     strand_map = {}
     with open(file2_path, "r") as f2:
         for line in f2:
@@ -24,7 +24,7 @@ def main():
             strand = cols[5]
             strand_map[read_name] = strand
 
-    # ファイル１を読み込み、5列目（キー）に対応するstrandを11列目として追加して出力
+    # Read file1, look up the strand corresponding to the 5th column (key) and append it as the 11th column in the output.
     with open(file1_path, "r") as f1:
         for line in f1:
             line = line.rstrip("\n")
@@ -35,9 +35,9 @@ def main():
             if len(cols) < 5:
                 sys.stderr.write("Warning: skipping line with less than 5 columns: {}\n".format(line))
                 continue
-            # ファイル１では5列目（インデックス4）がキー
+            # In file1, the key is the 5th column (index 4).
             key = cols[4]
-            # ファイル２にキーがあればstrand、なければ "NA" を設定
+            # If the key exists in file2, set the strand; otherwise, set it to "NA".
             strand = strand_map.get(key, "NA")
             cols.append(strand)
             print("\t".join(cols))
