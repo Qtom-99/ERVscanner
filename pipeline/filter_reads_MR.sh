@@ -1,32 +1,42 @@
 #!/bin/bash
+# samtools 1.20 or higher is recommended
+# for input files, please see README.md file
 
-#1サンプルリストは改行区切りで与える
-#2リファレンスゲノムのフルパス
-#3インプットファイルのディレクトリ
-#4インプットファイルの拡張子(bam or cram)
-#5アウトプットのディレクトリ（先にmkdir.shをしておくこと、mkdir.shの引数と同じ場所をあたえること）
-#6コア数
-#7クエリーBEDのフルパス
-#-Nオプションのため、samtoolsは1.20以上が必須　（1.19はcore dumpが起こりやすい　-P --fetch-pairsの速度低下bugに対応するため、1.21以上を推奨）
-SAMPLE=$1
-REF_GENOME=$2
-INPUT_PATH=$3
-INPUT_TYPE=$4
-DATA_PATH=$5
-NCORE=$6
-QUERY_BED_FULLPATH=$7
-QUALITY=$8
-CLUSTER_THRESHOLD=$9
-ALT_CHR_LIST=${10}
+# default values
+QUALITY=30
+CLUSTER_THRESHOLD=5
+INPUT_TYPE="bam"
+
+# getting option values
+while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
+  case $opt in
+    s) SAMPLE="$OPTARG" ;;
+    i) INPUT_PATH="$OPTARG" ;;
+    r) REF_GENOME="$OPTARG" ;;
+    t) INPUT_TYPE="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    n) NCORE="$OPTARG" ;;
+    b) QUERY_BED="$OPTARG" ;;
+    q) QUALITY="$OPTARG" ;;
+    c) CLUSTER_THRESHOLD="$OPTARG" ;;
+    a) ALT_CHR_LIST="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$QUERY_BED" || -z "$ALT_CHR_LIST" ]]; then
+  echo "Error: requied option values are missing" >&2
+  exit 1
+fi
 
 while read line
 do
 date
-echo "=== process1: SAMPLE:${line} ERV領域抽出開始 ==="
+echo "=== process1: SAMPLE:${line} estracting ERV regions in MR ==="
 samtools view -@ "$NCORE" -T "$REF_GENOME" -L $QUERY_BED_FULLPATH -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
-echo "=== process1: SAMPLE:${line} ERV領域抽出完了 ==="
+echo "=== process1: SAMPLE:${line} estracting ERV regions in MR: finished ==="
 date
-echo "=== process2: SAMPLE:${line} insertion推定開始 ==="
+echo "=== process2: SAMPLE:${line} insertion estimation in MR ==="
 samtools view -@ $NCORE -b -F 256 $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam |samtools view -@ $NCORE -F 2048 -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam -
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam
 bedtools pairtobed -type both -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam -b $QUERY_BED_FULLPATH 2>/dev/null > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_both.bam
@@ -57,9 +67,9 @@ python3 $DATA_PATH/script/bed_cluster_plusminus.py $DATA_PATH/sampledata/${line}
 python3 $DATA_PATH/script/bed_cluster_plusminus_jun.py $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus.bed $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed
 python3 $DATA_PATH/script/bed_merge2.py $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun_merged2.bed
 cp $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun_merged2.bed $DATA_PATH/allsample_merge/sampledata/.
-echo "=== process2: SAMPLE:${line} insertion推定完了 ==="
+echo "=== process2: SAMPLE:${line} insertion estimation in MR: finished  ==="
 date
-echo "=== process3: SAMPLE:${line} ERVreadのfastqファイルを準備中 ==="
+echo "=== process3: SAMPLE:${line} generating fastq files of ERV regions in MR ==="
 bedtools intersect -a $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads.bed -b $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed > $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed
 sort -k1,1 -k4,4 -k6,6 $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed | bedtools groupby -g 1,4,6 -c 2,3,5,7 -o min,max,first,first | awk 'BEGIN {OFS="\t"} {print $1, $4, $5, $2, $6, $3, $7}' > $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster_merged.bed
 sort -V -k1,1 -k6,6 -k2,2 -k3,3 $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster_merged.bed > $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster_merged_sort.bed
@@ -82,6 +92,6 @@ cut -f 1,3,4,7,8 $DATA_PATH/sampledata/${line}/read_info/cluster_ERVpos_merge_so
 awk 'BEGIN{FS=OFS="\t"} $4=="="{ $4=$2 }1' $DATA_PATH/sampledata/${line}/read_info/cluster_ERVpos_merge_sort_cut.sam > $DATA_PATH/sampledata/${line}/read_info/${line}_cluster_ERVpos_merge_sort_cut_awk.sam
 sort -V -k2,2 -k3,3 $DATA_PATH/sampledata/${line}/read_info/${line}_cluster_ERVpos_merge_sort_cut_awk.sam > $DATA_PATH/sampledata/${line}/read_info/${line}
 cp $DATA_PATH/sampledata/${line}/read_info/${line}_cluster_ERVread_merged_sort.fq $DATA_PATH/check_seq/fq/sampledata/.
-echo "=== process3: SAMPLE:${line} RERVreadのfastqファイル作成完了 ==="
+echo "=== process3: SAMPLE:${line} generating fastq files of ERV regions in MR: finished ==="
 done < $SAMPLE
 
