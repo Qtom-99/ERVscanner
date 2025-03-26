@@ -5,7 +5,7 @@
 # default values
 QUALITY=30
 CLUSTER_THRESHOLD=5
-INPUT_TYPE="BAM"
+INPUT_TYPE="bam"
 
 # getting option values
 while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
@@ -32,11 +32,11 @@ fi
 while read line
 do
 date
-echo "=== process1: SAMPLE:${line} ERV領域抽出開始 ==="
+echo "=== process1: SAMPLE:${line} estracting ERV regions ==="
 samtools view -@ "$NCORE" -T "$REF_GENOME" -L $DATA_PATH/$QUERY_BED -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
-echo "=== process1: SAMPLE:${line} ERV領域抽出完了 ==="
+echo "=== process1: SAMPLE:${line} estracting ERV regions: finished ==="
 date
-echo "=== process2: SAMPLE:${line} insertion推定開始 ==="
+echo "=== process2: SAMPLE:${line} insertion estimation ==="
 samtools view -@ $NCORE -b -F 256 $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam |samtools view -@ $NCORE -F 2048 -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam -
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam
 bedtools pairtobed -type xor -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam -b $DATA_PATH/$QUERY_BED 2>/dev/null > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam
@@ -67,9 +67,9 @@ python3 $DATA_PATH/script/bed_cluster_plusminus.py $DATA_PATH/sampledata/${line}
 python3 $DATA_PATH/script/bed_cluster_plusminus_jun.py $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus.bed $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed
 python3 $DATA_PATH/script/bed_merge2.py $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun_merged2.bed
 cp $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun_merged2.bed $DATA_PATH/allsample_merge/sampledata/.
-echo "=== process2: SAMPLE:${line} insertion推定完了 ==="
+echo "=== process2: SAMPLE:${line} insertion estimation: finished ==="
 date
-echo "=== process3: SAMPLE:${line} ERVreadのfastqファイルを準備中 ==="
+echo "=== process3: SAMPLE:${line} generating fastq files of ERV regions ==="
 bedtools intersect -a $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads.bed -b $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}clustered200_${CLUSTER_THRESHOLD}reads_merged_sort_clustered_plusminus_jun.bed > $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed
 cut -f 4 $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed > $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname.txt
 python3 $DATA_PATH/script/remove_endname.py $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname.txt $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend.txt
@@ -87,5 +87,5 @@ samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/read_info/${line}_posre
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam
 bedtools bamtofastq -i $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam -fq $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq
 cp $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq $DATA_PATH/check_seq/fq/sampledata/.
-echo "=== process3: SAMPLE:${line} RERVreadのfastqファイル作成完了 ==="
+echo "=== process3: SAMPLE:${line} generating fastq files of ERV regions: finished ==="
 done < $SAMPLE
