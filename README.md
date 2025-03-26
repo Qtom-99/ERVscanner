@@ -31,6 +31,10 @@ ERVscanner is composed of several shell scripts stored in the `pipeline` directo
 - SAMtools 1.20 or higher
 - BWA 0.7.17
 
+Following python librries are also required. You can install those libraries using `pip` or anaconda.
+
+- pandas
+
 Higher version will be fine as long as it works.
 
 ## Input files
