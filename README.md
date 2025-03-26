@@ -63,13 +63,12 @@ Annotation of repeat regions (`*.hits.gz`) can be downloaded from the website of
 
 First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the following command. The python script `wordgrep.py` is in `utils` directory.
 
-<ERV_LIST> is a line-separated non-redundant text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find. You can make the file using the following command
-
+`<ERV_LIST>` is a line-separated non-redundant text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find. You can make the file using the following command
 
 ```
-cut -f 2 <DFAM_INFO> | uniq > <ERV_LIST>
+cut -f2 <DFAM_INFO> | uniq > <ERV_LIST>
 ```
-The <ERV_LIST> file is used for the input of `wordgrep.py` script.
+The `<ERV_LIST>` file is used for the input of `wordgrep.py` script.
 ```
 python wordgrep.py <ASSEMBLY>.hits.gz <ERV_LIST> <OUTPUT_FILE.hits.gz>
 ```
