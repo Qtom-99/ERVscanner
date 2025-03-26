@@ -1,11 +1,12 @@
 #!/bin/bash
-#bwaインデックスファイル付きのサブジェクトファイル（ERVリードを判別したいデータベースのマルチファスタファイル）を$DATA_PATH/check_seq/bwa/subject直下においておくこと
 
 DATA_PATH=$1
 TARGET_REPEAT_FASTA=$2
 NCORE=$3
 
 date
+echo "=== building index file of target repeat sequences ==="
+bwa index <DATA_PATH>/chech_seq/bwa/subject/<TARGET_REPEAT_FASTA>
 echo "=== process4: merging fastq ==="
 cat $DATA_PATH/check_seq/fq/sampledata/*.fq > $DATA_PATH/check_seq/fq/allsample_ERVread.fq
 bwa mem -t $NCORE -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam $DATA_PATH/check_seq/bwa/subject/$TARGET_REPEAT_FASTA $DATA_PATH/check_seq/fq/allsample_ERVread.fq
