@@ -1,16 +1,31 @@
 #!/bin/bash
 
-SAMPLE=$1
-DATA_PATH=$2
-REF_GENOME=$3
-INPUT_PATH=$4
-INPUT_TYPE=$5
-NCORE=$6
+# default values
+INPUT_TYPE="bam"
+NCORE=1
+
+# getting option values
+while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
+  case $opt in
+    s) SAMPLE="$OPTARG" ;;
+    i) INPUT_PATH="$OPTARG" ;;
+    r) REF_GENOME="$OPTARG" ;;
+    t) INPUT_TYPE="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    n) NCORE="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" ]]; then
+  echo "Error: requied option values are missing" >&2
+  exit 1
+fi
 
 while read line
 do
 date
-echo "=== process8: SAMPLE:${line} ジェノタイピング開始  ==="
+echo "=== process8: SAMPLE:${line} genotyping  ==="
 samtools view -h $DATA_PATH/sampledata/${line}/read_info/cluster_ERVpos_merge.bam | awk '/^@/ || $6 ~ /[0-9]+[SH]/' | samtools view -b -o $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bam -
 bedtools bamtobed -i $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bam > $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bed
 sort -V -k1,1 -k2,2 $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bed > $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads_sort.bed
@@ -31,5 +46,5 @@ awk -v OFS="\t" '{print $1, $2-15, $2+15, $4}' $DATA_PATH/sampledata/${line}/cli
 bedtools intersect -a $DATA_PATH/sampledata/${line}/clip/${line}_breakpoint.bed -b $DATA_PATH/genotype/sampledata/${line}/${line}_q30_no_clipping_sort123.bed -f 1.0 -c > $DATA_PATH/genotype/sampledata/$line/${line}_n_of_covreads_noclip.txt
 cp $DATA_PATH/genotype/sampledata/$line/${line}_n_of_covreads_noclip.txt $DATA_PATH/genotype/allsample/.
 date
-echo "=== process8: SAMPLE:${line} ジェノタイピング終了  ==="
+echo "=== process8: SAMPLE:${line} genotyping: finished  ==="
 done < $SAMPLE
