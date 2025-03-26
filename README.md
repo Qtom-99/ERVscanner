@@ -80,7 +80,7 @@ Here, `<DATA_PATH>` is a directory where all output files are stored.
 
 After making the directories, the following files are moved to generated directories.
 - `<QUERY_BED>` file is moved to `<DATA_PATH>`.
-- `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/chech_seq/bwa/subject`.
+- `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/check_seq/bwa/subject`.
 - `<DRAM_INFO>` file is moved to `<DATA_PATH>/dfam_info`.
 - `<ERV_CLASS>` file is move to `<DATA_PATH>`.
 
