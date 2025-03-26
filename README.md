@@ -36,38 +36,37 @@ ERVscanner is composed of several shell scripts stored in the `pipeline` directo
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
-2. Tab-separated dictionary text file (`<DFAM_ERV>` file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
+1. Tab-separated dictionary text file (`<DFAM_ERV>` file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
    ```
     #Accession Name Classification Clades Description Length
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
-3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
-4. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
-5. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
-6. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
-7. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
-8. Reference genome sequence (`<REF_GENOME>` file)
-9. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
+1. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
+1. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
+1. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
+1. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
+1. Reference genome sequence (`<REF_GENOME>` file)
+1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
 ## Description of each shell script
 
 1. `mkdir.sh`
    If you run this shell script in your working directory, it will generate nessesary directories. 
-2. `filter_reads.sh`, add_pipe1
+1. `filter_reads.sh`, `filter_reads_MR.sh`
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
    - Estimation of insertion position Extract reads that map to non-ERV regions
    - Creating fastq file of RERVreads Extract reads mapped to ERV
-3. `remap_reads.sh`
+1. `remap_reads.sh`
    - Merge and map fastqs Reads attached to ERVs and map them back to the database
    - Create list of insert positions
-4. `identify_loci.sh`
+1. `identify_loci.sh`
    - Matching each sample's insertions with position IDs
-5. `filter_loci.sh`
+1. `filter_loci.sh`
    - Filtering data by insertion sequence estimation and creating a list of insertions across samples
-6. `genotype_ins.sh`, add_pipe5
+1. `genotype_ins.sh`, `genotype_ins_MR.sh`
    - Genotyping insetions using the information of boundary-overlapping reads
-7. `make_vcf.sh`
+1. `make_vcf.sh`
    - Creation of final output in VCF file format
 
 ## How to run
