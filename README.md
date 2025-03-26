@@ -59,12 +59,14 @@ Before you start to run the pipeline, you have to prepare the following files fo
 
 #### How to prepare <QUERY_BED>
 
-Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)).
+Annotation of repeat regions (`*.hits.gz`) can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)).
 
 First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the following command. The python script `wordgrep.py` is in `utils` directory.
 
+<ERV_LIST> is a line-separated text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find.
+
 ```
-python wordgrep.py <ASSEMBLY>.hits.gz <OUTPUT_FILE.hits.gz>
+python wordgrep.py <ASSEMBLY>.hits.gz <ERV_LIST> <OUTPUT_FILE.hits.gz>
 ```
 
 Next, run `make_bed.py` in `utils` directory to convert the file to BED format.
