@@ -5,17 +5,15 @@ ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retr
 
 The pipeline consists of two parallel workflows:
 
-1. One for detecting insertions within annotated repeat regions (MRs), and
-
-1. One for detecting insertions outside MRs.
+- One for detecting insertions within annotated repeat regions (MRs), and
+- One for detecting insertions outside MRs.
 
 The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
 
 To detect insertions within MRs, you must repeat the pipeline with the following modifications:
 
-Replace `filter_reads.sh` with `filter_reads_MR.sh`
-
-Replace `genotype_ins.sh` with `genotype_ins_MR.sh`
+- Replace `filter_reads.sh` with `filter_reads_MR.sh`
+- Replace `genotype_ins.sh` with `genotype_ins_MR.sh`
 
 Change the `<DATA_PATH>` directory accordingly
 Then, rerun the pipeline from the beginning.
