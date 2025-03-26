@@ -3,7 +3,7 @@ A data analysis pipeline to estimate ERV insertion based on short-read sequence 
 ]
 ERVscanner is a pipeline to estimate non-reference ERV insertions based on short-read whole genome sequence data.
 The pipeline consists of two parallel workflows, one for detecting insertions within annotated repeat regions (MRs) and one for detecting insertions outside MRs. 
-The genotyped VCF file of insertions outside of MRs is output in `<your_datapath>/vcf` and the genotyped VCF file of insertions within MRs is output in `<your_datapath>/inMR/vcf`. In these VCF files, the flag `MI` tag in the INFO field was added to distinguish these two output. You can merge these files using tools such as `bcftools` or our in-house `merge_vcf.py` script.
+The genotyped VCF file of insertions outside of MRs is output in `<DATA_PATH>/vcf` and the genotyped VCF file of insertions within MRs is output in `<DATA_PATH>/inMR/vcf`. In these VCF files, the flag `MI` tag in the INFO field was added to distinguish these two output. You can merge these files using tools such as `bcftools` or our in-house `merge_vcf.py` script.
 
 ERVscanner consists of seven shell scripts, which should be run concequtively. Some process could be parallelized to increase speed.
 
@@ -26,10 +26,10 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
 ```
 3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as ALU and LINE. Including non-ERV sequences decrease the false-positive rate.
-4. Line-delimited list of all samples (sample list file)
+4. Line-delimited list of all samples (<SAMPLE_LIST> file)
 5. BED file of ERV regions obtained from DFAM
-6. Reference genome sequence
-7. A line-separated list of alternative chromosomes in the reference genome of the organism to be analyzed
+6. Reference genome sequence (<REF_GENOME> file)
+7. A line-separated list of alternative chromosomes in the reference genome of the organism to be analyzed (<ALT_CHR_LIST> file)
 
 ## Description of each shell script
 
@@ -52,6 +52,19 @@ Before you start to run the pipeline, you have to prepare the following files fo
    - Creation of final output in VCF file format
 
 ## How to run
+
+You first run `mkdir.sh` to prepare directories nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
+```
+mkdir.sh <SAMPLE_LIST> <DATA_PATH>
+```
+Here, <DATA_PATH> is a directory where all output files are stored.
+
+After making directories, run `filter_reads.sh`.
+```
+filter_reads.sh <SAMPLE_LIST> <REF_GENOME> <INPUT_PATH> <INPUT_TYPE> <DATA_PATH> <NCORE> <QUERY_BED_FULLPATH> <QUALITY> <CLUSTER_THRESHOLD> <ALT_CHR_LIST>
+```
+
+1. Generating
 
 First, create the directory where the data will be placed in advance with .
 Pipeline1 and add_pipe5 can be run in parallel by dividing samples.
