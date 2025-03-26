@@ -8,7 +8,7 @@ CLUSTER_THRESHOLD=5
 INPUT_TYPE="BAM"
 
 # getting option values
-while getopts "i:o:" opt; do
+while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     i) INPUT_PATH="$OPTARG" ;;
@@ -24,8 +24,8 @@ while getopts "i:o:" opt; do
   esac
 done
 
-if [[ -z "$input" ]]; then
-  echo "Error: -i is required" >&2
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$QUERY_BED_FULLPATH" || -z "$ALT_CHR_LIST" ]]; then
+  echo "Error: requied option values are missing" >&2
   exit 1
 fi
 
