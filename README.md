@@ -25,7 +25,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
-3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV` file. (`<ERV_CLASS>` file)
+3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
 3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
 4. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
 5. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
@@ -76,14 +76,14 @@ mv <ERV_CLASS> <DATA_PATH>
 
 After making directories, run `filter_reads.sh`.
 ```
-bash filter_reads.sh -s <SAMPLE_LIST> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -d <DATA_PATH> -n <NCORE> -b <QUERY_BED> -q <QUALITY> -c <CLUSTER_THRESHOLD> -a <ALT_CHR_LIST>
+bash filter_reads.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE> -b <QUERY_BED> -q <QUALITY> -c <CLUSTER_THRESHOLD> -a <ALT_CHR_LIST>
 ```
 This process requires many parameters and takes the longest time if samplesize is big. Make sure all nessesary parameters are given.
 - -s: A file name of sample list `<SAMPLE_LIST>`
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -r: Reference genome file `<REF_GENOME>`
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -n: Number of core used. default: 1
 - -b: BED file defining masked regions (MRs). `QUERY_BED`.
 - -q: Threshold to define uniquely mapped reads. default: 30
@@ -120,8 +120,24 @@ bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 
 Run `filter_loci.sh`. This script process all samples at once.
 ```
-bash filter_loci.sh -d <DATA_PATH> -s <SAMPLE_LIST> -p <IDENTITY_THRESHOLD> -e <ERV_CLASS>
+bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD> -e <ERV_CLASS>
 ```
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -p: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
+- -e: A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file.
+
+Run `genotype_ins.sh`. This process can be manually parallelized.
+
+```
+bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE>
+```
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -r: Reference genome file `<REF_GENOME>`
+- -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
+- -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
+- -n: Number of core used. default: 1
 
 
 
