@@ -1,18 +1,33 @@
 #!/bin/bash
-
+# samtools 1.20 or higher is recommended
 # for input files, please see README.md file
 
-# samtools 1.20 or higher is recommended
-SAMPLE=$1 #<SAMPLE_LIST>
-REF_GENOME=$2 #<REF_GENOME>
-INPUT_PATH=$3 #directory for the input bam/cram files
-INPUT_TYPE=$4 #bam or cram, case sensitive
-DATA_PATH=$5
-NCORE=$6 #nubmer of threds used for samtools
-QUERY_BED_FULLPATH=$7
-QUALITY=${8:-30} #quarity score cut-off to define clusters, default: 30
-CLUSTER_THRESHOLD=${9:-5} #nubmer of reads required for defining clusters, default: 5
-ALT_CHR_LIST=${10} #<ALT_CHR_LIST>
+# default values
+QUALITY=30
+CLUSTER_THRESHOLD=5
+INPUT_TYPE="BAM"
+
+# getting option values
+while getopts "i:o:" opt; do
+  case $opt in
+    s) SAMPLE="$OPTARG" ;;
+    i) INPUT_PATH="$OPTARG" ;;
+    r) REF_GENOME="$OPTARG" ;;
+    t) INPUT_TYPE="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    n) NCORE="$OPTARG" ;;
+    b) QUERY_BED_FULLPATH="$OPTARG" ;;
+    q) QUALITY="$OPTARG" ;;
+    c) CLUSTER_THRESHOLD="$OPTARG" ;;
+    a) ALT_CHR_LIST="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$input" ]]; then
+  echo "Error: -i is required" >&2
+  exit 1
+fi
 
 while read line
 do
