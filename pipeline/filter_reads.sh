@@ -1,23 +1,18 @@
 #!/bin/bash
 
-#1サンプルリストは改行区切りで与える
-#2リファレンスゲノムのフルパス
-#3インプットファイルのディレクトリ
-#4インプットファイルの拡張子(bam or cram)
-#5アウトプットのディレクトリ（先にmkdir.shをしておくこと、mkdir.shの引数と同じ場所をあたえること）
-#6コア数
-#7クエリーBEDのフルパス
-#-Nオプションのため、samtoolsは1.20以上が必須　（1.19はcore dumpが起こりやすい　-P --fetch-pairsの速度低下bugに対応するため、1.21以上を推奨）
-SAMPLE=$1
-REF_GENOME=$2
-INPUT_PATH=$3
-INPUT_TYPE=$4
+# for input files, please see README.md file
+
+# samtools 1.20 or higher is recommended
+SAMPLE=$1 #<SAMPLE_LIST>
+REF_GENOME=$2 #<REF_GENOME>
+INPUT_PATH=$3 #directory for the input bam/cram files
+INPUT_TYPE=$4 #bam or cram, case sensitive
 DATA_PATH=$5
-NCORE=$6
+NCORE=$6 #nubmer of threds used for samtools
 QUERY_BED_FULLPATH=$7
-QUALITY=${8:-30}
-CLUSTER_THRESHOLD=${9:-5}
-ALT_CHR_LIST=${10}
+QUALITY=${8:-30} #quarity score cut-off to define clusters, default: 30
+CLUSTER_THRESHOLD=${9:-5} #nubmer of reads required for defining clusters, default: 5
+ALT_CHR_LIST=${10} #<ALT_CHR_LIST>
 
 while read line
 do
