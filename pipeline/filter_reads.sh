@@ -16,7 +16,7 @@ while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
     t) INPUT_TYPE="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
     n) NCORE="$OPTARG" ;;
-    b) QUERY_BED_FULLPATH="$OPTARG" ;;
+    b) QUERY_BED="$OPTARG" ;;
     q) QUALITY="$OPTARG" ;;
     c) CLUSTER_THRESHOLD="$OPTARG" ;;
     a) ALT_CHR_LIST="$OPTARG" ;;
@@ -24,7 +24,7 @@ while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
   esac
 done
 
-if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$QUERY_BED_FULLPATH" || -z "$ALT_CHR_LIST" ]]; then
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$QUERY_BED" || -z "$ALT_CHR_LIST" ]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
@@ -33,13 +33,13 @@ while read line
 do
 date
 echo "=== process1: SAMPLE:${line} ERV領域抽出開始 ==="
-samtools view -@ "$NCORE" -T "$REF_GENOME" -L $QUERY_BED_FULLPATH -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
+samtools view -@ "$NCORE" -T "$REF_GENOME" -L $DATA_PATH/$QUERY_BED -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
 echo "=== process1: SAMPLE:${line} ERV領域抽出完了 ==="
 date
 echo "=== process2: SAMPLE:${line} insertion推定開始 ==="
 samtools view -@ $NCORE -b -F 256 $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam |samtools view -@ $NCORE -F 2048 -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam -
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam
-bedtools pairtobed -type xor -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam -b $QUERY_BED_FULLPATH 2>/dev/null > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam
+bedtools pairtobed -type xor -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam -b $DATA_PATH/$QUERY_BED 2>/dev/null > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam
 bedtools bamtobed -i $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bed
 awk -F'\t' '$4 ~ "/1$"' $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bed > $DATA_PATH/sampledata/${line}/${line}_read1.bed
 awk -F'\t' '$4 ~ "/2$"' $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bed > $DATA_PATH/sampledata/${line}/${line}_read2.bed
@@ -53,7 +53,7 @@ python3 $DATA_PATH/script/remove_endname.py $DATA_PATH/sampledata/${line}/${line
 sort $DATA_PATH/sampledata/${line}/${line}_readname_nonread.txt | uniq - > $DATA_PATH/sampledata/${line}/${line}_readname_nonread_uniq.txt
 samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/${line}_readname_nonread_uniq.txt -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor_discordant.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam
 bedtools bamtobed -i $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor_discordant.bam > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor_discordant.bed
-bedtools intersect -v -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor_discordant.bam -b $QUERY_BED_FULLPATH > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8.bam
+bedtools intersect -v -abam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor_discordant.bam -b $DATA_PATH/$QUERY_BED > $DATA_PATH/sampledata/${line}/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8.bam
 samtools sort -@ $NCORE -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8.bam
 samtools view -q ${QUALITY} -o $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}.bam $DATA_PATH/sampledata/${line}/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort.bam
 python3 $DATA_PATH/script/extract_altxahit.py $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_xor_discordant_onlyf8_sort_q${QUALITY}.bam $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}_noalt.bam $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallhit_ERV_bed_position_F256_F2048_sortn_both_discordant_onlyf8_sort_q${QUALITY}_remove.bam $ALT_CHR_LIST
@@ -74,14 +74,14 @@ bedtools intersect -a $DATA_PATH/sampledata/${line}/curated_bam/${line}_dfamallh
 cut -f 4 $DATA_PATH/sampledata/${line}/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed > $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname.txt
 python3 $DATA_PATH/script/remove_endname.py $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname.txt $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend.txt
 uniq $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend.txt > $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend_uniq
-bedtools intersect -a $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam -b $QUERY_BED_FULLPATH -v > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition.bam
+bedtools intersect -a $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam -b $DATA_PATH/$QUERY_BED -v > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition.bam
 samtools view -@ $NCORE -F 256 -b $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition.bam | samtools view -@ $NCORE -b -F 2048 -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_F256_F2048.bam -
 samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend_uniq -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_F256_F2048.bam
 samtools view -@ $NCORE -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true.sam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true.bam
 cut -f 1,3,4,7,8 $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true.sam > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true_cut.sam
 awk 'BEGIN{FS=OFS="\t"} $4=="="{ $4=$2 }1' $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true_cut.sam > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true_cut_awk.sam
 sort -V -k2,2 -k3,3 $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true_cut_awk.sam > $DATA_PATH/sampledata/${line}/read_info/${line}
-bedtools intersect -a $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam -b $QUERY_BED_FULLPATH -wa > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread.bam
+bedtools intersect -a $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bam -b $DATA_PATH/$QUERY_BED -wa > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread.bam
 samtools view -@ $NCORE -F 256 -b $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread.bam | samtools view -@ $NCORE -b -F 2048 -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_F256_F2048.bam -
 samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend_uniq -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_F256_F2048.bam
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam
