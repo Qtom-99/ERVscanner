@@ -141,7 +141,7 @@ bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_P
 
 Run `make_vcf`. 
 ```
-bash make_vcf.sh`-s <SAMPLE_LIST> -d <DATA_PATH>
+bash make_vcf.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
 The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
