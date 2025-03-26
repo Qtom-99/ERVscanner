@@ -5,7 +5,7 @@ INPUT_TYPE="bam"
 NCORE=1
 
 # getting option values
-while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
+while getopts "i:s:r:t:d:n:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     i) INPUT_PATH="$OPTARG" ;;
