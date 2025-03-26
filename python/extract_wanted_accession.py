@@ -1,11 +1,11 @@
 import sys
 
 def filter_tsv_by_accession(tsv_file, accession_file, output_file):
-    # アクセッション番号をセットに読み込む
+    # Read accession numbers as a set
     with open(accession_file, 'r') as af:
         accession_numbers = set(line.strip() for line in af if line.strip())
 
-    # TSVファイルをフィルタリング
+    # filter TSV
     with open(tsv_file, 'r') as tf, open(output_file, 'w') as of:
         for line in tf:
             fields = line.strip().split("\t")
@@ -13,7 +13,7 @@ def filter_tsv_by_accession(tsv_file, accession_file, output_file):
                 of.write(line)
 
 if __name__ == "__main__":
-    # 引数の確認
+    # check parameters
     if len(sys.argv) != 4:
         print("Usage: python filter_tsv.py <tsv_file> <accession_file> <output_file>")
         sys.exit(1)
