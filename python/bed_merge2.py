@@ -2,10 +2,10 @@ import pandas as pd
 import argparse
 
 def merge_bed_regions(input_file_path, output_file_path):
-    # BEDファイルの読み込み
+    # Read the BED file
     bed_df = pd.read_csv(input_file_path, sep='\t', header=None)
 
-    # 二行ごとにマージ
+    # Merge every two rows
     merged_rows = []
     for i in range(0, len(bed_df), 2):
         if i+1 < len(bed_df):
@@ -15,7 +15,7 @@ def merge_bed_regions(input_file_path, output_file_path):
         else:
             merged_rows.append([bed_df.iloc[i, 0], bed_df.iloc[i, 1], bed_df.iloc[i, 2]])
 
-    # 新しいBEDファイルの作成
+    # Create a new BED file
     merged_bed_df = pd.DataFrame(merged_rows)
     merged_bed_df.to_csv(output_file_path, sep='\t', header=False, index=False)
 
