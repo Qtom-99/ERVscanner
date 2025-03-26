@@ -1,7 +1,20 @@
 #!/bin/bash
 
-SAMPLE=$1
-DATA_PATH=$2
+# default values
+
+# getting option values
+while getopts "d:s:" opt; do
+  case $opt in
+    s) SAMPLE="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
+  echo "Error: requied option values are missing" >&2
+  exit 1
+fi
 
 mkdir $DATA_PATH/sampledata
 mkdir $DATA_PATH/script
