@@ -3,16 +3,16 @@ A data analysis pipeline to estimate ERV insertion based on short-read sequence 
 ]
 ERVscanner is a pipeline to estimate non-reference ERV insertions based on short-read whole genome sequence data.
 The pipeline consists of two parallel workflows, one for detecting insertions within annotated repeat regions (MRs) and one for detecting insertions outside MRs. 
-The genotyped VCF file of insertions outside of MRs is output in <your_datapath>/vcf and the genotyped VCF file of insertions within MRs is output in <your_datapath>/inMR/vcf. In these VCF files, the flag `MI` tag in the INFO field was added to distinguish these two output. You can merge these files using tools such as `bcftools` or our in-house `merge_vcf.py` script.
+The genotyped VCF file of insertions outside of MRs is output in `<your_datapath>/vcf` and the genotyped VCF file of insertions within MRs is output in `<your_datapath>/inMR/vcf`. In these VCF files, the flag `MI` tag in the INFO field was added to distinguish these two output. You can merge these files using tools such as `bcftools` or our in-house `merge_vcf.py` script.
 
-ERVscanner consists of seven shell scripts, which should be run concequtively.
+ERVscanner consists of seven shell scripts, which should be run concequtively. Some process could be parallelized to increase speed.
 
 ## Required Tools and Environment
 - Unix-like operationg system
 - Python3
-- bedtools 2.27.1
-- samtools 1.20 or higher
-- bwa 
+- BEDtools 2.27.1
+- SAMtools 1.20 or higher
+- BWA 
 
 ## Input files
 
@@ -25,7 +25,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
 ```
-3. Multi fasta file of repeat sequences. This file could include all non-target repeat sequences such as ALU and LINE. Including non-ERV sequences decrease the false-positive rate.
+3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as ALU and LINE. Including non-ERV sequences decrease the false-positive rate.
 4. Line-delimited list of all samples (sample list file)
 5. BED file of ERV regions obtained from DFAM
 6. Reference genome sequence
@@ -34,22 +34,22 @@ Before you start to run the pipeline, you have to prepare the following files fo
 ## Description of each shell script
 
 1. `mkdir.sh`
-   If you run this shell script in your working directory, it will generate nessesary directories. The 
-1. filter_read, add_pipe1
-  process1 Extract both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
-  process2 Estimation of insertion position Extract reads that map to non-ERV regions.
-  process3 Create fastq file of RERVreads Extract reads mapped to ERV
-1. Pipeline2
-  process4 Merge and map fastqs Reads attached to ERVs and map them back to the database
-  process5 Create list of insert positions
-1.  Pipeline3
-  process6 Match each sample's insertions with position IDs
-1. Pipeline4
-  process7 Filter by insertion sequence estimation, create cross table of 01
-1. Pipeline5, add_pipe5
-  process8 Genotyping
-1. Pipeline6
-  process9 Creation of VCF
+   If you run this shell script in your working directory, it will generate nessesary directories. 
+2. `filter_reads.sh`, add_pipe1
+   - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
+   - Estimation of insertion position Extract reads that map to non-ERV regions
+   - Creating fastq file of RERVreads Extract reads mapped to ERV
+3. `remapping_reads.sh`
+   - Merge and map fastqs Reads attached to ERVs and map them back to the database
+   - Create list of insert positions
+4. `annotate_ERV.sh`
+   - Matching each sample's insertions with position IDs
+5. `filtering_loci.sh`
+   - Filtering data by insertion sequence estimation, create cross table of 01
+6. `genotyping_ins.sh`, add_pipe5
+   - Genotyping insetions using the information of boundary-overlapping reads
+7. `make_vcf.sh`
+   - Creation of final output in VCF file format
 
 ## How to run
 
