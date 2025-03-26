@@ -80,13 +80,13 @@ Here, `<DATA_PATH>` is a directory where all output files are stored.
 
 After making the directories, the following files are moved to generated directories.
 - `<QUERY_BED>` file is moved to `<DATA_PATH>`.
-- `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/check_seq/bwa/subject`.
+- `<ALL_REPEAT_FATA>` file is moved to `<DATA_PATH>/check_seq/bwa/subject`.
 - `<DRAM_INFO>` file is moved to `<DATA_PATH>/dfam_info`.
 - `<ERV_CLASS>` file is move to `<DATA_PATH>`.
 
 ```
 mv <QUERY_BED> <DATA_PATH>
-mv <TARGET_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
+mv <ALL_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
 mv <DFAM_INFO> <DATA_PATH>/dfam_info/
 mv <ERV_CLASS> <DATA_PATH>/
 ```
@@ -111,9 +111,9 @@ This process requires many parameters and takes the longest time if samplesize i
 
 Run `remap_reads.sh`. 
 ```
-bash remap_reads.sh -f <TARGET_REPEAT_FASTA> -n <NCORE> -d <DATA_PATH>
+bash remap_reads.sh -f <ALL_REPEAT_FASTA> -n <NCORE> -d <DATA_PATH>
 ```
-- -f: Multi-fasta file of target repeat sequences you want to identify. `<TARGET_REPEAT_FASTA>`
+- -f: Multi-fasta file of target repeat sequences you want to identify. `<ALL_REPEAT_FASTA>`
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -n: Number of core used. default: 1
 
