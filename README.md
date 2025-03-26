@@ -29,7 +29,9 @@ ERVscanner is composed of several shell scripts stored in the `pipeline` directo
 - Python3
 - BEDtools 2.27.1
 - SAMtools 1.20 or higher
-- BWA 
+- BWA 0.7.17
+
+Higher version will be fine as long as it works.
 
 ## Input files
 
@@ -51,7 +53,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
 
 #### How to prepare <QUERY_BED> and <ALL_REPEAT_FASTA>
 
-Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](dfam.org/releases/Dfam_3.8/annotations/))
+Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)). Download 
 
 ## Description of each shell script
 
