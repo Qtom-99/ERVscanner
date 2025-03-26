@@ -67,7 +67,7 @@ First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the followi
 
 
 ```
-cut -c 2 <DFAM_ERV> | uniq > <ERV_LIST>
+cut -f 2 <DFAM_ERV> | uniq > <ERV_LIST>
 ```
 The <ERV_LIST> file is used for the input of `wordgrep.py` script.
 ```
