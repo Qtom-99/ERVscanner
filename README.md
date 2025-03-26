@@ -35,6 +35,7 @@ Higher version will be fine as long as it works.
 Following python librries are also required. You can install those libraries using `pip` or anaconda.
 
 - pandas
+- pysam
 
 
 
