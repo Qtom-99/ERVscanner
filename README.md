@@ -25,7 +25,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
-3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV` file
+3. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV` file. (`<ERV_CLASS>` file)
 3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
 4. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
 5. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
