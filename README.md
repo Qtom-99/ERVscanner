@@ -44,7 +44,7 @@ Following python librries are also required. You can install those libraries usi
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
-1. Tab-separated dictionary text file (`<DFAM_ERV>` file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
+1. Tab-separated dictionary text file (`<DFAM_INFO>` file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
    ```
     #Accession Name Classification Clades Description Length
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
@@ -63,8 +63,13 @@ Annotation of repeat regions (`*.hits.gz`) can be downloaded from the website of
 
 First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the following command. The python script `wordgrep.py` is in `utils` directory.
 
-<ERV_LIST> is a line-separated text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find.
+<ERV_LIST> is a line-separated non-redundant text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find. You can make the file using the following command
 
+
+```
+cut -c 2 <DFAM_ERV> | uniq > <ERV_LIST>
+```
+The <ERV_LIST> file is used for the input of `wordgrep.py` script.
 ```
 python wordgrep.py <ASSEMBLY>.hits.gz <ERV_LIST> <OUTPUT_FILE.hits.gz>
 ```
