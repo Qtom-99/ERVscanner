@@ -15,8 +15,7 @@ To detect insertions within MRs, you must repeat the pipeline with the following
 - Replace `filter_reads.sh` with `filter_reads_MR.sh`
 - Replace `genotype_ins.sh` with `genotype_ins_MR.sh`
 
-Change the `<DATA_PATH>` directory accordingly
-Then, rerun the pipeline from the beginning.
+Change the `<DATA_PATH>` directory accordingly. Then, rerun the pipeline from the beginning.
 
 Detecting insertions in MRs is more challenging due to the repetitive nature of these regions, leading to a higher false-positive rate. This is why we separated the workflow.
 
