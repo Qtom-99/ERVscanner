@@ -61,11 +61,17 @@ bash mkdir.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
 Here, `<DATA_PATH>` is a directory where all output files are stored.
 
-After making the directories, `<QUERY_BED>` file is moved to `<DATA_PATH>`. In addition, `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/chech_seq/bwa/subject`.
+After making the directories, the following files are moved to generated directories.
+- `<QUERY_BED>` file is moved to `<DATA_PATH>`.
+- `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/chech_seq/bwa/subject`.
+- `<DRAM_INFO>` file is moved to `<DATA_PATH>/dfam_info`.
+- `<ERV_CLASS>` file is move to `<DATA_PATH>`.
 
 ```
 mv <QUERY_BED> <DATA_PATH>
 mv <TARGET_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
+mv <DFAM_INFO> <DATA_PATH>/dfam_info/
+mv <ERV_CLASS> <DATA_PATH>
 ```
 
 After making directories, run `filter_reads.sh`.
