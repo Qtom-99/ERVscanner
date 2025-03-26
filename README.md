@@ -8,7 +8,7 @@ The genotyped VCF file of insertions outside of MRs is output in `<DATA_PATH>/vc
 ERVscanner consists of seven shell scripts, which should be run concequtively. Some process could be parallelized to increase speed.
 
 ## Required Tools and Environment
-- Unix-like operationg system
+- Unix-like operationg system, bash
 - Python3
 - BEDtools 2.27.1
 - SAMtools 1.20 or higher
@@ -19,17 +19,18 @@ ERVscanner consists of seven shell scripts, which should be run concequtively. S
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
-2. Tab-separated DFAM_ERV dictionary text file you are focosing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
+2. Tab-separated dictionary text file (<DFAM_ERV> file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
 ```
     #Accession Name Classification Clades Description Length
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
 ```
-3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as ALU and LINE. Including non-ERV sequences decrease the false-positive rate.
-4. Line-delimited list of all samples (<SAMPLE_LIST> file)
-5. BED file of ERV regions obtained from DFAM
-6. Reference genome sequence (<REF_GENOME> file)
-7. A line-separated list of alternative chromosomes in the reference genome of the organism to be analyzed (<ALT_CHR_LIST> file)
+3. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
+4. Multi-fasta file of target repeat sequences you want to identify (`<TARGET_REPEAT_FASTA>` file)
+5. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
+6. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
+7. Reference genome sequence (`<REF_GENOME>` file)
+8. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
 ## Description of each shell script
 
@@ -42,10 +43,10 @@ Before you start to run the pipeline, you have to prepare the following files fo
 3. `remap_reads.sh`
    - Merge and map fastqs Reads attached to ERVs and map them back to the database
    - Create list of insert positions
-4. `merge_loci.sh`
+4. `identify_loci.sh`
    - Matching each sample's insertions with position IDs
 5. `filter_loci.sh`
-   - Filtering data by insertion sequence estimation, create cross table of 01
+   - Filtering data by insertion sequence estimation and creating a list of insertions across samples
 6. `genotype_ins.sh`, add_pipe5
    - Genotyping insetions using the information of boundary-overlapping reads
 7. `make_vcf.sh`
@@ -55,16 +56,52 @@ Before you start to run the pipeline, you have to prepare the following files fo
 
 You first run `mkdir.sh` to prepare directories nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
-mkdir.sh <SAMPLE_LIST> <DATA_PATH>
+bash mkdir.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
-Here, <DATA_PATH> is a directory where all output files are stored.
+Here, `<DATA_PATH>` is a directory where all output files are stored.
+
+After making the directories, `<QUERY_BED>` file is moved to `<DATA_PATH>`. In addition, `<TARGET_REPEAT_FATA>` file is moved to `<DATA_PATH>/chech_seq/bwa/subject`.
+
+```
+mv <QUERY_BED> <DATA_PATH>
+mv <TARGET_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
+```
 
 After making directories, run `filter_reads.sh`.
 ```
-filter_reads.sh <SAMPLE_LIST> <REF_GENOME> <INPUT_PATH> <INPUT_TYPE> <DATA_PATH> <NCORE> <QUERY_BED_FULLPATH> <QUALITY> <CLUSTER_THRESHOLD> <ALT_CHR_LIST>
+bash filter_reads.sh -s <SAMPLE_LIST> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -d <DATA_PATH> -n <NCORE> -b <QUERY_BED> -q <QUALITY> -c <CLUSTER_THRESHOLD> -a <ALT_CHR_LIST>
 ```
+This process requires many parameters and takes the longest time if samplesize is big. Make sure all nessesary parameters are given.
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -r: Reference genome file `<REF_GENOME>`
+- -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
+- -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -n: Number of core used. default: 1
+- -b: BED file defining masked regions (MRs). `QUERY_BED`.
+- -q: Threshold to define uniquely mapped reads. default: 30
+- -c: Threshold of the number of uniqly mapped reads to define read culster. default: 5
+- -a: A line-separated list of alternative chromosomes in the reference genome of the organism. `<ALT_CHR_LIST>`
 
-1. Generating
+`filter_reads.sh` can be parallelized. By dividing `<SAMPLE_LIST>` file, you can do it manually.
+
+Run `remap_reads.sh`. 
+```
+bash remap_reads.sh -f <TARGET_REPEAT_FASTA> -n <NCORE> -d <DATA_PATH>
+```
+- -f: Multi-fasta file of target repeat sequences you want to identify. `<TARGET_REPEAT_FASTA>`
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -n: Number of core used. default: 1
+
+Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the process in parallel manually.
+
+```
+bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
+```
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -n: Number of core used. default: 1
+
 
 First, create the directory where the data will be placed in advance with .
 Pipeline1 and add_pipe5 can be run in parallel by dividing samples.
