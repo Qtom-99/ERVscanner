@@ -102,6 +102,8 @@ bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -n: Number of core used. default: 1
 
+Run `
+
 
 First, create the directory where the data will be placed in advance with .
 Pipeline1 and add_pipe5 can be run in parallel by dividing samples.
