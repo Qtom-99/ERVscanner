@@ -20,7 +20,7 @@ if [[ -z "$SAMPLE" || -z "$DATA_PATH" || -z "$ACCESSIONLIST"]]; then
 fi
 
 date
-echo "=== process7: 挿入配列の推定によるフィルタリング開始  ==="
+echo "=== process7: filtering loci by checking the insertion contents and directions  ==="
 cat $DATA_PATH/check_seq/master_file/sampledata/*strand.csv > $DATA_PATH/check_seq/master_file/allsample_data_merge.csv
 sort -k5,5 $DATA_PATH/check_seq/master_file/allsample_data_merge.csv > $DATA_PATH/check_seq/master_file/allsample_data_merge_sort.csv
 paste $DATA_PATH/check_seq/master_file/allsample_data_merge_sort.csv $DATA_PATH/check_seq/bwa/result/mapping_info_sort > $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master.txt
@@ -42,4 +42,4 @@ python3 $DATA_PATH/script/get_strand_majoority.py $DATA_PATH/check_seq/master_fi
 python3 $DATA_PATH/script/make01table.py $DATA_PATH/check_seq/master_file/pos_sample_uniq $ALLSAMPLELIST $DATA_PATH/01table/allsample_01table.tsv
 python3 $DATA_PATH/script/extract_major_pos.py $DATA_PATH/01table/allsample_01table.tsv $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort $DATA_PATH/01table/allsample_01table_${threshold//./}up.tsv
 date
-echo "=== process7: フィルタリング完了 ${threshold}以上の一致率の挿入のみを抽出しました  ==="
+echo "=== process7: filtering loci by checking the insertion contents and directions: finished extracting loci with ${threshold} identity threshold ==="
