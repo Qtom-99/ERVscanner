@@ -31,11 +31,13 @@ ERVscanner is composed of several shell scripts stored in the `pipeline` directo
 - SAMtools 1.20 or higher
 - BWA 0.7.17
 
+Higher version will be fine as long as it works.
+
 Following python librries are also required. You can install those libraries using `pip` or anaconda.
 
 - pandas
 
-Higher version will be fine as long as it works.
+
 
 ## Input files
 
@@ -55,9 +57,38 @@ Before you start to run the pipeline, you have to prepare the following files fo
 1. Reference genome sequence (`<REF_GENOME>` file)
 1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
-#### How to prepare <QUERY_BED> and <ALL_REPEAT_FASTA>
+#### How to prepare <QUERY_BED>
 
-Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)). Download 
+Annotation of repeat regions can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)).
+
+First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the following command. The python script `wordgrep.py` is in `utils` directory.
+
+```
+python wordgrep.py <ASSEMBLY>.hits.gz <OUTPUT_FILE.hits.gz>
+```
+
+Next, run `make_bed.py` in `utils` directory to convert the file to BED format.
+
+```
+python make_bed.py <ASSEMBLY>.hits.gz <QUERY_BED>
+```
+The output file is `<QUERY_BED>` file.
+
+#### How to prepare <ALL_REPEAT_FASTA>
+
+Download `<ASSEMBLY>.nrph.hits.gz`, such as `mm10.nrph.hits.gz` and run `make_bed.py` in `utils` directory.
+```
+python make_bed.py <ASSEMBLY>.nrph.hits.gz <OUTPUT.bed>
+```
+Sort the bed file.
+```
+sort -V -k1,1 -k2,2 <OUTPUT.bed> | bedtools merge -d 50 - > <MERGED.bed>
+```
+Then generate multi-fasta file.
+```
+bedtools getfasta -fi <REF_GENOME> -name+ -bed <MERGED.bed> -s -fo <ALL_REPEAT_FASTA>
+```
+The fasta file is later move to a different directory.
 
 ## Description of each shell script
 
