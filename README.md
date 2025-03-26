@@ -155,7 +155,7 @@ bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_P
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
 
-Run `make_vcf`. 
+Run `make_vcf.sh`. 
 ```
 bash make_vcf.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
