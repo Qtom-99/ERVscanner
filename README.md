@@ -71,7 +71,7 @@ After making the directories, the following files are moved to generated directo
 mv <QUERY_BED> <DATA_PATH>
 mv <TARGET_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
 mv <DFAM_INFO> <DATA_PATH>/dfam_info/
-mv <ERV_CLASS> <DATA_PATH>
+mv <ERV_CLASS> <DATA_PATH>/
 ```
 
 After making directories, run `filter_reads.sh`.
@@ -139,18 +139,10 @@ bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_P
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
 
+Run `make_vcf`. 
+```
+bash make_vcf.sh`-s <SAMPLE_LIST> -d <DATA_PATH>
+```
+The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
 
-First, create the directory where the data will be placed in advance with .
-Pipeline1 and add_pipe5 can be run in parallel by dividing samples.
-Pipeline 2 is a merging process and should be executed after pipeline 1 has been completed for all samples.
-Pipeline 3 can be run in parallel with separate samples.
-Pipeline 4 is a merging and filtering process and should be executed after Pipeline 3 has been completed for all samples.
-Pipeline 5 and add_pipe5 can be run in parallel with separate samples.
-Pipeline 6 is a merging process and should be executed after Pipeline 5 or add_pipe5 has been completed for all samples.
-
-
-
-
-Notes
-The threshold argument for filtering is not a percentage, but a ratio.
