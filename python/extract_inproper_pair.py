@@ -2,22 +2,21 @@
 import argparse
 
 def is_abnormal_pair(rec1, rec2):
-    """
-    rec1, rec2: BEDファイルの各行をタブ区切りでsplitしたリスト（少なくとも6カラム必要）
-      [0] chromosome
-      [1] start
-      [2] end
-      [3] read name
-      [4] MAPQ（使用しません）
-      [5] strand
-
-    異常ペアとする条件は以下の通り:
-      - 同一染色体であること
-      - 両リードの開始位置の差が 10,000 塩基以内 (< 10,000)であること
-      - 正常なペアの場合、向きは反対で、「+」側のリードが上流（startが小さい）になっているはず。
-        これを満たさない場合を異常（abnormal）と判断します。
-    """
-    # 同一染色体でなければ対象外
+# rec1, rec2: Each is a tab-split list representing a BED file row (requires at least 6 columns)
+#   [0] chromosome
+#   [1] start
+#   [2] end
+#   [3] read name
+#   [4] MAPQ (not used)
+#   [5] strand
+#
+# Criteria for identifying an abnormal pair:
+# - Both reads must be on the same chromosome
+# - The difference between their start positions must be less than 10,000 bases
+# - In a proper pair, the strands must be opposite, and the "+" strand read should be upstream (i.e., have a smaller start position)
+#   If these conditions are not met, the pair is considered abnormal
+    
+    # Exclude pairs that are not on the same chromosome
     if rec1[0] != rec2[0]:
         return False
 
@@ -27,7 +26,7 @@ def is_abnormal_pair(rec1, rec2):
     except ValueError:
         return False
 
-    # 距離条件: 両リードの開始位置の差が10,000塩基以上なら対象外
+    # Distance condition: Exclude pairs if the difference between their start positions is 10,000 bases or more
     if abs(start1 - start2) >= 10000:
         return False
 
@@ -38,29 +37,31 @@ def is_abnormal_pair(rec1, rec2):
     if strand1 == strand2:
         return True
 
-    # 向きが反対の場合、正常なペアなら
-    # ・もし rec1 が "+"、rec2 が "-" なら、rec1 の start < rec2 の start
-    # ・もし rec1 が "-"、rec2 が "+" なら、rec2 の start < rec1 の start
+# If the strands are opposite, a proper pair should meet the following conditions:
+# - If rec1 is "+" and rec2 is "-", then rec1's start must be less than rec2's start
+# - If rec1 is "-" and rec2 is "+", then rec2's start must be less than rec1's start
     if strand1 == '+' and strand2 == '-':
         return not (start1 < start2)
     elif strand1 == '-' and strand2 == '+':
         return not (start2 < start1)
     else:
-        # 予期しないストランドの値の場合は異常とする
+        # Treat as abnormal if strand values are unexpected
         return True
 
 def extract_abnormal_pairs(input_bed, output_bed):
     with open(input_bed, 'r') as fin, open(output_bed, 'w') as fout:
-        # ヘッダー行や空行は除外
+        # Skip header lines and empty lines
         lines = (line for line in fin if not line.startswith("#") and line.strip())
-        # 2行ずつ読み込む (/1 のレコードの後に /2 のレコードが来る前提)
+        # Read two lines at a time (assuming a /1 record is followed by its corresponding /2 record)
         for line1, line2 in zip(lines, lines):
             fields1 = line1.rstrip("\n").split("\t")
             fields2 = line2.rstrip("\n").split("\t")
             if len(fields1) < 6 or len(fields2) < 6:
                 continue
 
-            # read name の末尾が /1 と /2 であることを確認し、ベースネームが一致するかチェック
+            # Ensure that the read names end with /1 and /2, and check that their base names match
+
+
             name1 = fields1[3]
             name2 = fields2[3]
             if not (name1.endswith("/1") and name2.endswith("/2")):
@@ -74,10 +75,10 @@ def extract_abnormal_pairs(input_bed, output_bed):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="名前順ソート済みBEDから、10kb以内で向きが不自然なペアを抽出します。"
+        description="# Extract read pairs from a name-sorted BED file that are within 10kb and have abnormal orientation"
     )
-    parser.add_argument("-i", "--input", required=True, help="入力BEDファイルのパス")
-    parser.add_argument("-o", "--output", required=True, help="出力BEDファイルのパス")
+    parser.add_argument("-i", "--input", required=True, help="# Path to the input BED file")
+    parser.add_argument("-o", "--output", required=True, help="# Path to the input BED file")
     args = parser.parse_args()
 
     extract_abnormal_pairs(args.input, args.output)
