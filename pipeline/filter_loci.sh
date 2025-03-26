@@ -1,14 +1,23 @@
 #!/bin/bash
 
-#あらかじめ以下のようなタブ区切りのヘッダー付き辞書ファイルを$DATA_PATH/dfam_infoの直下にDfam_ERV_infoという名前でおいておくこと（https://dfam.org/browseのフィルタリング後の内容をそのままコピペするとよい）
-#Accession	Name	Classification	Clades	Description	Length
-#DF000001893	LTRIS2	ERV1	Mus	Mouse subfamily of LTR retrotransposons	564
-#第四引数は、ほしいERVclassや名前のリスト（辞書の３列目のグループ名のこと　ERV1、HERVKなど）
+# default
+$threshold=0.7
 
-DATA_PATH=$1
-threshold=$2
-ALLSAMPLELIST=$3
-ACCESSIONLIST=$4
+# getting option values
+while getopts "d:s:" opt; do
+  case $opt in
+    s) SAMPLE="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    p) threshold="$OPTARG" ;;
+    e) ACCESSIONLIST="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
+  echo "Error: requied option values are missing" >&2
+  exit 1
+fi
 
 date
 echo "=== process7: 挿入配列の推定によるフィルタリング開始  ==="
@@ -22,7 +31,7 @@ python3 $DATA_PATH/script/ERVname_to_class.py $DATA_PATH/check_seq/master_file/a
 python3 $DATA_PATH/script/DFaccession_to_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_sed $DATA_PATH/dfam_info/Dfam_ERV_info $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class
 python3 $DATA_PATH/script/major_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class $DATA_PATH/check_seq/master_file/pos_allclass_report $DATA_PATH/check_seq/master_file/pos_majorclass_report
 awk -F'\t' -v threshold="$threshold" '$3 >= threshold' "$DATA_PATH/check_seq/master_file/pos_majorclass_report" > "$DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up"
-python3 $DATA_PATH/script/extract_wanted_accession.py $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up $ACCESSIONLIST $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted
+python3 $DATA_PATH/script/extract_wanted_accession.py $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up $DATA_PATH/$ACCESSIONLIST $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted
 cut -f 1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted | sort -V > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort
 cut -f 1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted | sort -V > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort
 sort -V -k1,1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort_ID
