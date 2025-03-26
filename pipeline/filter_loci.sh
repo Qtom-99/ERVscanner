@@ -4,7 +4,7 @@
 $threshold=0.7
 
 # getting option values
-while getopts "d:s:" opt; do
+while getopts "d:s:p:e:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
@@ -14,7 +14,7 @@ while getopts "d:s:" opt; do
   esac
 done
 
-if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
+if [[ -z "$SAMPLE" || -z "$DATA_PATH" || -z "$ACCESSIONLIST"]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
