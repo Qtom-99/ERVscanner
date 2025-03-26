@@ -1,7 +1,5 @@
 #!/bin/bash
 
-NCORE=1
-
 # default values
 NCORE=1
 
