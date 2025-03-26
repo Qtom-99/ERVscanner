@@ -5,8 +5,8 @@ ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retr
 
 The pipeline consists of two parallel workflows:
 
-- One for detecting insertions within annotated repeat regions (MRs), and
-- One for detecting insertions outside MRs.
+- Detecting insertions within annotated repeat regions in the reference genome (MRs)
+- Detecting insertions outside MRs.
 
 The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
 
