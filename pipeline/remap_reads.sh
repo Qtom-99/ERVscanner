@@ -1,8 +1,23 @@
 #!/bin/bash
 
-DATA_PATH=$1
-TARGET_REPEAT_FASTA=$2
-NCORE=$3
+NCORE=1
+
+# default values
+NCORE=1
+
+# getting option values
+while getopts "d:f:n:" opt; do
+  case $opt in
+    f) TARGET_REPEAT_FASTA="$OPTARG" ;;
+    d) DATA_PATH="$OPTARG" ;;
+    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
+  esac
+done
+
+if [[ -z "$TARGET_REPEAT_FASTA" || -z "$DATA_PATH" ]]; then
+  echo "Error: requied option values are missing" >&2
+  exit 1
+fi
 
 date
 echo "=== building index file of target repeat sequences ==="
