@@ -42,7 +42,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
 3. `remapping_reads.sh`
    - Merge and map fastqs Reads attached to ERVs and map them back to the database
    - Create list of insert positions
-4. `annotate_ERV.sh`
+4. `merge_loci.sh`
    - Matching each sample's insertions with position IDs
 5. `filtering_loci.sh`
    - Filtering data by insertion sequence estimation, create cross table of 01
