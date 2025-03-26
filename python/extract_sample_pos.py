@@ -21,7 +21,7 @@ def main(sample_name, mutations_tsv, positions_bed, output_bed):
             print(f'Sample "{sample_name}" is not found in {mutations_tsv}')
             sys.exit(1)
 
-    # BEDファイルから該当するポジションを抽出
+    # Extract matching positions from the BED file
     with open(positions_bed, 'r') as bed_file, open(output_bed, 'w') as out_file:
         for line in bed_file:
             fields = line.strip().split('\t')
