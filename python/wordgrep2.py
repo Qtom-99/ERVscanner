@@ -15,7 +15,7 @@ def main(file1_path, file2_path, output_path):
         search_terms = set(file.read().splitlines())
 
     # Open the input and output files
-    with gzip.open(file1_path, 'rt') as infile, open(output_path, 'w') as outfile:
+    with gzip.open(file1_path, 'rt') as infile, gzip.open(output_path, 'wt') as outfile:
         reader = csv.reader(infile, delimiter='\t')
         writer = csv.writer(outfile, delimiter='\t')
         
