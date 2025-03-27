@@ -3,7 +3,7 @@
 # default values
 
 # getting option values
-while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
+while getopts "i:s:r:t:d:n:b:q:c:a:p:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     r) REF_GENOME="$OPTARG" ;;
@@ -12,12 +12,13 @@ while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
     n) NRPH="$OPTARG" ;;
     t) TARGET="$OPTARG" ;;
     a) ALT_CHR_LIST="$OPTARG" ;;
+    p) PY_PATH="$OPTARG" ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
   esac
 done
 
 # checking all required options are specified
-if [[ -z "$SAMPLE" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$DFAM_INFO" || -z "$ALT_CHR_LIST" || -z "$NRPH" || -z "$TARGET" ]]; then
+if [[ -z "$SAMPLE" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$DFAM_INFO" || -z "$ALT_CHR_LIST" || -z "$NRPH" || -z "$TARGET" || -z "$PY_PATH" ]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
@@ -34,7 +35,7 @@ if [[ ! -f "$REF_GENOME" ]]; then
 fi
 
 if [[ ! -d "$DATA_PATH" ]]; then
-  echo "Error: File '$DATA_PATH' not found." >&2
+  echo "Error: Directory '$DATA_PATH' not found." >&2
   exit 1
 fi
 
@@ -59,6 +60,11 @@ if [[ ! -f "$DFAM_INFO" ]]; then
 fi
 if [[ ! -f "$ALT_CHR_LIST" ]]; then
   echo "Error: File '$ALT_CHR_LIST' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$PY_PATH" ]]; then
+  echo "Error: Directory '$PY_PATH' not found." >&2
   exit 1
 fi
 
@@ -121,6 +127,7 @@ mkdir $DATA_PATH/inMR/sampledata/$line/curated_bam
 mkdir $DATA_PATH/inMR/genotype/sampledata/$line
 done < $SAMPLE
 echo "=== copying and generating files ==="
+cp $PY_PATH/*.py $DATA_PATH/script/ 
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
 cut -f2 $DFAM_INFO> | uniq > $DATA_PTH/ERV_list.txt
