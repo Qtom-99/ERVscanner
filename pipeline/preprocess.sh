@@ -120,6 +120,7 @@ done < $SAMPLE
 echo "=== copying and generating files ==="
 cp $PY_PATH/*.py $DATA_PATH/script/
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
+bwa faidx $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
 cp $ALT_CHR_LIST $DATA_PATH/reference/alt_chr_list
 cut -f2 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_name.txt
