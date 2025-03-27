@@ -68,7 +68,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
 1. `filter_reads.sh`, `filter_reads_MR.sh`
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
    - Estimation of insertion position Extract reads that map to non-ERV regions
-   - Creating fastq file of RERVreads Extract reads mapped to ERV
+   - Creating fastq file of ERV reads and extracting reads mapped to ERV
 1. `remap_reads.sh`
    - Merge and map fastqs Reads attached to ERVs and map them back to the database
    - Create list of insert positions
