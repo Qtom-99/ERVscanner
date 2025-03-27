@@ -44,11 +44,6 @@ if [[ ! -f "$NRPH" ]]; then
   exit 1
 fi
 
-if [[ ! -f "$NRPH" ]]; then
-  echo "Error: File '$NRPH' not found." >&2
-  exit 1
-fi
-
 if [[ ! -f "$TARGET" ]]; then
   echo "Error: File '$TARGET' not found." >&2
   exit 1
