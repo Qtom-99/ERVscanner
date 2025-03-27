@@ -5,11 +5,10 @@ INPUT_TYPE="bam"
 NCORE=1
 
 # getting option values
-while getopts "i:s:r:t:d:n:" opt; do
+while getopts "i:s:t:d:n:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     i) INPUT_PATH="$OPTARG" ;;
-    r) REF_GENOME="$OPTARG" ;;
     t) INPUT_TYPE="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
     n) NCORE="$OPTARG" ;;
@@ -17,8 +16,26 @@ while getopts "i:s:r:t:d:n:" opt; do
   esac
 done
 
-if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" ]]; then
+REF_GENOME="$DATA_PATH/reference/reference.fasta"
+
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$DATA_PATH" ]]; then
   echo "Error: requied option values are missing" >&2
+  exit 1
+fi
+
+# chekcing file does exist
+if [[ ! -f "$SAMPLE" ]]; then
+  echo "Error: File '$SAMPLE' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$DATA_PATH" ]]; then
+  echo "Error: Directory '$DATA_PATH' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$INPUT_PATH" ]]; then
+  echo "Error: Directory '$INPUT_PATH' not found." >&2
   exit 1
 fi
 
