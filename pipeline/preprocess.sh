@@ -127,10 +127,10 @@ mkdir $DATA_PATH/inMR/sampledata/$line/curated_bam
 mkdir $DATA_PATH/inMR/genotype/sampledata/$line
 done < $SAMPLE
 echo "=== copying and generating files ==="
-cp $PY_PATH/*.py $DATA_PATH/script/ 
+cp $PY_PATH/*.py $DATA_PATH/script/
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
-cp $ALT_CHR_LIST $DATA_PATH/reference/
+cp $ALT_CHR_LIST $DATA_PATH/reference/alt_chr_list
 cut -f2 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/target_name.txt
 cut -f3 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/target_class.txt
 python3 $DATA_PATH/script/wordgrep.py $TARGET $DATA_PTH/dfam_info/target_name.txt $DATA_PATH/dfam_info/target.hits.gz
