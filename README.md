@@ -91,11 +91,11 @@ git clone https://github.com/Qtom-99/ERVscanner.git
 
 You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
-bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <PY_PATH>
+bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <ERVscanner_PATH>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`. They should be matched to the basename of CRAM/BAM files.
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
-- -r: Reference genome file `<REF_GENOME>`
+- -d : A path to data. `<DATA_PATH>`
+- -r: Reference genome file
 - -f: A table of Dfam annotation you want to analyze `<DFAM_INFO>`
 - -n: Non-redundant repeat annotation in Dfam (`<ASSEMBLY>.nrph.hits.gz`) `<NRPH>`
 - -h: All repeat annotation in Dfam (`<ASSEMBLY>.hits.gz`) `<ALL>`
