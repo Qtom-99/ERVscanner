@@ -98,7 +98,7 @@ The fasta file is later move to a different directory.
 
 ## Description of each shell script
 
-1. `mkdir.sh`
+1. `preprocess.sh`
    If you run this shell script in your working directory, it will generate nessesary directories. 
 1. `filter_reads.sh`, `filter_reads_MR.sh`
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
@@ -120,7 +120,7 @@ The fasta file is later move to a different directory.
 
 You first run `mkdir.sh` to prepare directories nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
-bash mkdir.sh -s <SAMPLE_LIST> -d <DATA_PATH>
+bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -b <QUERY_BED> -a <ALT_CHR_LIST>
 ```
 Here, `<DATA_PATH>` is a directory where all output files are stored.
 
