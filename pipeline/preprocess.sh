@@ -124,7 +124,9 @@ cp $DFAM_INFO $DATA_PATH/dfam_info/
 cp $ALT_CHR_LIST $DATA_PATH/reference/alt_chr_list
 cut -f2 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_name.txt
 cut -f3 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_class.txt
+echo "=== generating target bed file ==="
 python3 $DATA_PATH/script/wordgrep.py $TARGET $DATA_PATH/dfam_info/target_name.txt $DATA_PATH/dfam_info/target.hits.gz
+echo "=== generating target bed file: finished ==="
 python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_PATH/dfam_info/target.bed
 python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
 sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed | bedtools merge -d 50 - > $DATA_PATH/dfam_info/nrph.sorted.bed
