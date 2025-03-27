@@ -62,6 +62,7 @@ if [[ ! -f "$ALT_CHR_LIST" ]]; then
   exit 1
 fi
 
+echo "=== creating directories ==="
 mkdir $DATA_PATH/sampledata
 mkdir $DATA_PATH/script
 mkdir $DATA_PATH/check_seq
@@ -119,7 +120,7 @@ mkdir $DATA_PATH/inMR/sampledata/$line/read_info
 mkdir $DATA_PATH/inMR/sampledata/$line/curated_bam
 mkdir $DATA_PATH/inMR/genotype/sampledata/$line
 done < $SAMPLE
-
+echo "=== copying and generating files ==="
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
 cut -f2 $DFAM_INFO> | uniq > $DATA_PTH/ERV_list.txt
