@@ -3,14 +3,14 @@
 # default values
 
 # getting option values
-while getopts "i:s:r:t:d:n:b:q:c:a:p:" opt; do
+while getopts "i:s:r:h:d:n:b:q:c:a:p:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     r) REF_GENOME="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
     f) DFAM_INFO="$OPTARG" ;;
     n) NRPH="$OPTARG" ;;
-    t) TARGET="$OPTARG" ;;
+    h) TARGET="$OPTARG" ;;
     a) ALT_CHR_LIST="$OPTARG" ;;
     p) PY_PATH="$OPTARG" ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
