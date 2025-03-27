@@ -75,6 +75,12 @@ Before you start to run the pipeline, you have to prepare the following files fo
 
 ## How to run
 
+Download all files from github. The command create a directory `ERVscanner`.
+
+```
+git clone https://github.com/Qtom-99/ERVscanner.git
+```
+
 You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
 bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <PY_PATH>
