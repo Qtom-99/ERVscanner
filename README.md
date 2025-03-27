@@ -85,7 +85,7 @@ You first run `preprocess.sh` to prepare directories and files nessesary for the
 ```
 bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <PY_PATH>
 ```
-- -s: A file name of sample list `<SAMPLE_LIST>`
+- -s: A file name of sample list `<SAMPLE_LIST>`. They should be matched to the basename of CRAM/BAM files.
 - -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -r: Reference genome file `<REF_GENOME>`
 - -f: A table of Dfam annotation you want to analyze `<DFAM_INFO>`
