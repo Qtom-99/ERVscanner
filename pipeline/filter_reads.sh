@@ -23,6 +23,7 @@ done
 
 REF_GENOME="$DATA_PATH/reference/reference.fasta"
 QUERY_BED="$DATA_PATH/dfam_info/target.bed"
+ALT_CHR_LIST=$DATA_PATH/reference/alt_chr_list
 
 if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$DATA_PATH" ]; then
   echo "Error: requied option values are missing" >&2
