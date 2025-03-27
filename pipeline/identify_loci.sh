@@ -17,6 +17,17 @@ if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
   exit 1
 fi
 
+# chekcing file does exist
+if [[ ! -f "$SAMPLE" ]]; then
+  echo "Error: File '$SAMPLE' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$DATA_PATH" ]]; then
+  echo "Error: Directory '$DATA_PATH' not found." >&2
+  exit 1
+fi
+
 date
 echo "=== process6: checking ID of insertions ==="
 while read line
