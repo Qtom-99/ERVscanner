@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
 import csv
+import gzip
 
 def main(file1_path, file2_path, output_path):
     """
