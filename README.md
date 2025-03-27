@@ -56,7 +56,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
 ## Description of each shell script
 
 1. `preprocess.sh`
-   If you run this shell script in your working directory, it will generate nessesary directories and prepare all necessary files. 
+   - If you run this shell script in your working directory, it will generate nessesary directories and prepare all necessary files. 
 1. `filter_reads.sh`, `filter_reads_MR.sh`
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
    - Estimation of insertion position Extract reads that map to non-ERV regions
