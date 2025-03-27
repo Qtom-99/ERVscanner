@@ -135,15 +135,6 @@ bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
 - -n: Number of core used. default: 1
 
-Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the process in parallel manually.
-
-```
-bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
-```
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
-- -n: Number of core used. default: 1
-
 Run `filter_loci.sh`. This script process all samples at once.
 ```
 bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD>
