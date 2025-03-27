@@ -94,7 +94,7 @@ bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO
 - -a: A line-separated list of alternative chromosomes in the reference genome of the organism `<ALT_CHR_LIST>`
 - -p: Path to the downloaded ERVscanner directory
 
-The process generate a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets.
+The `preprocess.sh` generates a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets.
 
 After finishing preparation, run `filter_reads.sh`.
 ```
