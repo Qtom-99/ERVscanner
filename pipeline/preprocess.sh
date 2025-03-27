@@ -130,7 +130,8 @@ echo "=== copying and generating files ==="
 cp $PY_PATH/*.py $DATA_PATH/script/ 
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
-cut -f2 $DFAM_INFO> | uniq > $DATA_PTH/ERV_list.txt
+cut -f2 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/ERV_list.txt
+cut -f3 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/target_class.txt
 python3 $DATA_PATH/script/wordgrep.py $TARGET  $DATA_PTH/ERV_list.txt $DATA_PATH/dfam_info/target.hits.gz
 python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_PATH/dfam_info/target.bed
 python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
