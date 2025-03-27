@@ -123,7 +123,7 @@ Run `remap_reads.sh`.
 ```
 bash remap_reads.sh -d <DATA_PATH> -n <NCORE>
 ```
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
 - -n: Number of core used. default: 1
 
 Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the process in parallel manually.
@@ -140,7 +140,7 @@ Run `filter_loci.sh`. This script process all samples at once.
 bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
 - -p: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
 
 Run `genotype_ins.sh`. This process can be manually parallelized.
