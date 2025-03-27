@@ -59,7 +59,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
    chrY_JH584300_random
    chrUn_GL456239
    ```
-1. Dfam annotation of all and non-redundant set. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL>` and `<NRPH>` in `preprocess.sh`.
+1. Dfam annotation of all and non-redundant set. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL_REPEAT>` and `<NRPH_REPEAT>` in `preprocess.sh`.
 
 ## Description of each shell script
 
@@ -91,14 +91,14 @@ git clone https://github.com/Qtom-99/ERVscanner.git
 
 You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
-bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <ERVscanner_PATH>
+bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH_REPEAT> -h <ALL_REPEAT> -a <ALT_CHR_LIST> -p <ERVscanner_PATH>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`. They should be matched to the basename of CRAM/BAM files.
 - -d : A path to data. `<DATA_PATH>`
 - -r: Reference genome file
 - -f: A table of Dfam annotation you want to analyze `<DFAM_INFO>`
-- -n: Non-redundant repeat annotation in Dfam (`<ASSEMBLY>.nrph.hits.gz`) `<NRPH>`
-- -h: All repeat annotation in Dfam (`<ASSEMBLY>.hits.gz`) `<ALL>`
+- -n: Non-redundant repeat annotation in Dfam (`<ASSEMBLY>.nrph.hits.gz`) `<NRPH_REPEAT>`
+- -h: All repeat annotation in Dfam (`<ASSEMBLY>.hits.gz`) `<ALL_REPEAT>`
 - -a: A line-separated list of alternative chromosomes in the reference genome of the organism `<ALT_CHR_LIST>`
 - -p: Path to the downloaded ERVscanner directory
 
