@@ -58,11 +58,6 @@ if [[ ! -f "$ALT_CHR_LIST" ]]; then
   exit 1
 fi
 
-if [[ ! -d "$PY_PATH" ]]; then
-  echo "Error: Directory '$PY_PATH' not found." >&2
-  exit 1
-fi
-
 echo "=== creating directories ==="
 mkdir $DATA_PATH/sampledata
 mkdir $DATA_PATH/script
