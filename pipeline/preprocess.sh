@@ -3,7 +3,7 @@
 # default values
 
 # getting option values
-while getopts "i:s:r:h:d:n:b:q:c:a:p:" opt; do
+while getopts "s:r:d:f:n:h:a:p:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     r) REF_GENOME="$OPTARG" ;;
@@ -126,14 +126,15 @@ mkdir $DATA_PATH/inMR/sampledata/$line/read_info
 mkdir $DATA_PATH/inMR/sampledata/$line/curated_bam
 mkdir $DATA_PATH/inMR/genotype/sampledata/$line
 done < $SAMPLE
+
 echo "=== copying and generating files ==="
 cp $PY_PATH/*.py $DATA_PATH/script/
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 cp $DFAM_INFO $DATA_PATH/dfam_info/
 cp $ALT_CHR_LIST $DATA_PATH/reference/alt_chr_list
-cut -f2 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/target_name.txt
-cut -f3 $DFAM_INFO> | uniq | sort > $DATA_PTH/dfam_info/target_class.txt
-python3 $DATA_PATH/script/wordgrep.py $TARGET $DATA_PTH/dfam_info/target_name.txt $DATA_PATH/dfam_info/target.hits.gz
+cut -f2 $DFAM_INFO> | uniq | sort > $DATA_PATH/dfam_info/target_name.txt
+cut -f3 $DFAM_INFO> | uniq | sort > $DATA_PATH/dfam_info/target_class.txt
+python3 $DATA_PATH/script/wordgrep.py $TARGET $DATA_PATH/dfam_info/target_name.txt $DATA_PATH/dfam_info/target.hits.gz
 python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_PATH/dfam_info/target.bed
 python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
 sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed | bedtools merge -d 50 - > $DATA_PATH/dfam_info/nrph.sorted.bed
