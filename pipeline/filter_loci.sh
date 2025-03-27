@@ -4,17 +4,18 @@
 $threshold=0.7
 
 # getting option values
-while getopts "d:s:p:e:" opt; do
+while getopts "d:s:m:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
-    p) threshold="$OPTARG" ;;
-    e) ACCESSIONLIST="$OPTARG" ;;
+    m) threshold="$OPTARG" ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
   esac
 done
 
-if [[ -z "$SAMPLE" || -z "$DATA_PATH" || -z "$ACCESSIONLIST"]]; then
+ACCESSIONLIST="$DATA_PATH/dfam_info/target_class.txt"
+
+if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
@@ -31,7 +32,7 @@ python3 $DATA_PATH/script/ERVname_to_class.py $DATA_PATH/check_seq/master_file/a
 python3 $DATA_PATH/script/DFaccession_to_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_sed $DATA_PATH/dfam_info/Dfam_ERV_info $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class
 python3 $DATA_PATH/script/major_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class $DATA_PATH/check_seq/master_file/pos_allclass_report $DATA_PATH/check_seq/master_file/pos_majorclass_report
 awk -F'\t' -v threshold="$threshold" '$3 >= threshold' "$DATA_PATH/check_seq/master_file/pos_majorclass_report" > "$DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up"
-python3 $DATA_PATH/script/extract_wanted_accession.py $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up $DATA_PATH/$ACCESSIONLIST $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted
+python3 $DATA_PATH/script/extract_wanted_accession.py $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up $ACCESSIONLIST $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted
 cut -f 1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted | sort -V > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort
 cut -f 1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted | sort -V > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort
 sort -V -k1,1 $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted > $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort_ID
@@ -39,7 +40,7 @@ cut -f 1,10 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt >
 sort -V -k1,1 -k2,2 $DATA_PATH/check_seq/master_file/pos_sample | uniq > $DATA_PATH/check_seq/master_file/pos_sample_uniq
 cut -f 1,10,11,13 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt > $DATA_PATH/check_seq/master_file/allsample_POSID_strand_seq
 python3 $DATA_PATH/script/get_strand_majoority.py $DATA_PATH/check_seq/master_file/allsample_POSID_strand_seq $DATA_PATH/check_seq/master_file/allsample_POSID_strand_pass $DATA_PATH/check_seq/master_file/allsample_POSID_strand_filtered
-python3 $DATA_PATH/script/make01table.py $DATA_PATH/check_seq/master_file/pos_sample_uniq $ALLSAMPLELIST $DATA_PATH/01table/allsample_01table.tsv
+python3 $DATA_PATH/script/make01table.py $DATA_PATH/check_seq/master_file/pos_sample_uniq $SAMPLE $DATA_PATH/01table/allsample_01table.tsv
 python3 $DATA_PATH/script/extract_major_pos.py $DATA_PATH/01table/allsample_01table.tsv $DATA_PATH/check_seq/master_file/pos_majorclass_${threshold//./}up_wanted_sort $DATA_PATH/01table/allsample_01table_${threshold//./}up.tsv
 date
 echo "=== process7: filtering loci by checking the insertion contents and directions: finished extracting loci with ${threshold} identity threshold ==="
