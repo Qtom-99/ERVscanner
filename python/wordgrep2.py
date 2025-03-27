@@ -1,5 +1,6 @@
 import pandas as pd
 import sys
+import csv
 
 def main(file1_path, file2_path, output_path):
     """
@@ -10,24 +11,21 @@ def main(file1_path, file2_path, output_path):
     :param file2_path: Path to the second newline-separated file
     :param output_path: Path to save the filtered output file
     """
-    # Read the first text file (tab-separated)
-    df1 = pd.read_csv(file1_path, sep='\t', header=None)
-
-    # Read the second text file (newline-separated)
     with open(file2_path, 'r') as file:
-        lines = file.read().splitlines()
+        search_terms = set(file.read().splitlines())
 
-    # Convert the second file's content into a set for faster lookup
-    search_terms = set(lines)
-
-    # Perform an exact match search on the third column of the first file
-    filtered_df = df1[df1[2].isin(search_terms)]
-
-    # Save the filtered results to the output file
-    filtered_df.to_csv(output_path, sep='\t', index=False, header=False)
+    # Open the input and output files
+    with open(file1_path, 'r') as infile, open(output_path, 'w') as outfile:
+        reader = csv.reader(infile, delimiter='\t')
+        writer = csv.writer(outfile, delimiter='\t')
+        
+        # Process line by line to minimize memory usage
+        for row in reader:
+            if len(row) > 2 and row[2] in search_terms:
+                writer.writerow(row)
     
     # Print the filtered results
-    print(filtered_df)
+    print("File processed successfully")
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
