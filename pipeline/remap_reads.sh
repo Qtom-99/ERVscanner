@@ -4,22 +4,22 @@
 NCORE=1
 
 # getting option values
-while getopts "d:f:n:" opt; do
+while getopts "d:n:" opt; do
   case $opt in
-    f) TARGET_REPEAT_FASTA="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
   esac
 done
 
-if [[ -z "$TARGET_REPEAT_FASTA" || -z "$DATA_PATH" ]]; then
+TARGET_FASTA="$DATA_PATH/dfam_info/nrph.fasta"
+
+if [[ -z "$DATA_PATH" ]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
 
 date
-echo "=== building index file of target repeat sequences ==="
-bwa index <DATA_PATH>/chech_seq/bwa/subject/<TARGET_REPEAT_FASTA>
+
 echo "=== process4: merging fastq ==="
 cat $DATA_PATH/check_seq/fq/sampledata/*.fq > $DATA_PATH/check_seq/fq/allsample_ERVread.fq
 bwa mem -t $NCORE -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam $DATA_PATH/check_seq/bwa/subject/$TARGET_REPEAT_FASTA $DATA_PATH/check_seq/fq/allsample_ERVread.fq
