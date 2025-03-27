@@ -44,10 +44,10 @@ Before you start to run the pipeline, you have to prepare the following files fo
 1. BAM or CRAM for each sample
 1. Tab-separated dictionary text file (`<DFAM_INFO>` file) you are focusing (You can search copy and paste the content at https://dfam.org/browse.). Here is an example.
    ```
-    #Accession Name Classification Clades Description Length
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
+   The labels of columns are, "Accession", "Name", "Classification", "Clades", "Description", "Length".
 1. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
 1. Reference genome sequence (`<REF_GENOME>` file)
 1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file). Here is an example.
