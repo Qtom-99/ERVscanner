@@ -120,7 +120,11 @@ mkdir $DATA_PATH/inMR/sampledata/$line/curated_bam
 mkdir $DATA_PATH/inMR/genotype/sampledata/$line
 done < $SAMPLE
 
-mv <QUERY_BED> <DATA_PATH>
-mv <ALL_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
-mv <DFAM_INFO> <DATA_PATH>/dfam_info/
-mv <ERV_CLASS> <DATA_PATH>/
+cp $REF_GENOME $DATA_PATH/reference/reference.fasta
+cp $DFAM_INFO $DATA_PATH/dfam_info/
+cut -f2 $DFAM_INFO> | uniq > $DATA_PTH/ERV_list.txt
+python3 $DATA_PATH/script/wordgrep.py $TARGET  $DATA_PTH/ERV_list.txt $DATA_PATH/dfam_info/target.hits.gz
+python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_PATH/dfam_info/target.bed
+python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
+sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed | bedtools merge -d 50 - > $DATA_PATH/dfam_info/nrph.sorted.bed
+bedtools getfasta -fi $DATA_PATH/reference/reference.fasta -name+ -bed $DATA_PATH/dfam_info/nrph.sorted.bed -s -fo $DATA_PATH/check_seq/bwa/subject/nrph.fasta
