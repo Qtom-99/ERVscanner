@@ -20,6 +20,17 @@ if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
   exit 1
 fi
 
+# chekcing file does exist
+if [[ ! -f "$SAMPLE" ]]; then
+  echo "Error: File '$SAMPLE' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$DATA_PATH" ]]; then
+  echo "Error: Directory '$DATA_PATH' not found." >&2
+  exit 1
+fi
+
 date
 echo "=== process7: filtering loci by checking the insertion contents and directions  ==="
 cat $DATA_PATH/check_seq/master_file/sampledata/*strand.csv > $DATA_PATH/check_seq/master_file/allsample_data_merge.csv
