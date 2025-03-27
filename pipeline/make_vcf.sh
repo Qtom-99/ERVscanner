@@ -16,6 +16,17 @@ if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
   exit 1
 fi
 
+# chekcing file does exist
+if [[ ! -f "$SAMPLE" ]]; then
+  echo "Error: File '$SAMPLE' not found." >&2
+  exit 1
+fi
+
+if [[ ! -d "$DATA_PATH" ]]; then
+  echo "Error: Directory '$DATA_PATH' not found." >&2
+  exit 1
+fi
+
 date
 echo "=== process9: storing the result of genotyping  ==="
 python3 $DATA_PATH/script/renew_genotype_0123.py $DATA_PATH/01table/allsample_01table_07up.tsv $DATA_PATH/genotype/allsample $DATA_PATH/01table/genotype/allsample_07_sort_genotype.tsv
