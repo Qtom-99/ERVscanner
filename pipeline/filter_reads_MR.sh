@@ -8,23 +8,23 @@ CLUSTER_THRESHOLD=5
 INPUT_TYPE="bam"
 
 # getting option values
-while getopts "i:s:r:t:d:n:b:q:c:a:" opt; do
+while getopts "i:s:r:t:d:n:q:c:" opt; do
   case $opt in
     s) SAMPLE="$OPTARG" ;;
     i) INPUT_PATH="$OPTARG" ;;
-    r) REF_GENOME="$OPTARG" ;;
     t) INPUT_TYPE="$OPTARG" ;;
     d) DATA_PATH="$OPTARG" ;;
     n) NCORE="$OPTARG" ;;
-    b) QUERY_BED="$OPTARG" ;;
     q) QUALITY="$OPTARG" ;;
     c) CLUSTER_THRESHOLD="$OPTARG" ;;
-    a) ALT_CHR_LIST="$OPTARG" ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
   esac
 done
 
-if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$REF_GENOME" || -z "$DATA_PATH" || -z "$QUERY_BED" || -z "$ALT_CHR_LIST" ]]; then
+REF_GENOME="$DATA_PATH/reference/reference.fasta"
+QUERY_BED="$DATA_PATH/dfam_info/target.bed"
+
+if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$DATA_PATH" || -z "$ALT_CHR_LIST" ]]; then
   echo "Error: requied option values are missing" >&2
   exit 1
 fi
