@@ -12,7 +12,7 @@ while getopts "i:s:r:h:d:n:b:q:c:a:p:" opt; do
     n) NRPH="$OPTARG" ;;
     h) TARGET="$OPTARG" ;;
     a) ALT_CHR_LIST="$OPTARG" ;;
-    p) PY_PATH="$OPTARG" ;;
+    p) PY_PATH="$OPTARG"/script ;;
     \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
   esac
 done
