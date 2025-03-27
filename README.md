@@ -59,7 +59,7 @@ Before you start to run the pipeline, you have to prepare the following files fo
    chrY_JH584300_random
    chrUn_GL456239
    ```
-1. Dfam annotation of all and non-redundant set. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL_REPEAT>` and `<NRPH_REPEAT>` in `preprocess.sh`.
+1. Dfam annotation of all and non-redundant repeats. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL_REPEAT>` and `<NRPH_REPEAT>` in `preprocess.sh`.
 
 ## Description of each shell script
 
