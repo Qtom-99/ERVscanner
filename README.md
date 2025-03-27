@@ -48,15 +48,10 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
-1. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
 1. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
 1. Reference genome sequence (`<REF_GENOME>` file)
 1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
-
-#### How to prepare <QUERY_BED>
-
-
-The fasta file is later move to a different directory.
+1. Dfam annotation of all and non-redundant set. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL>` and `<NRPH>` in `preprocess.sh`.
 
 ## Description of each shell script
 
@@ -80,37 +75,40 @@ The fasta file is later move to a different directory.
 
 ## How to run
 
-You first run `mkdir.sh` to prepare directories nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
+You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
 ```
-bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -b <QUERY_BED> -a <ALT_CHR_LIST>
+bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH> -h <ALL> -a <ALT_CHR_LIST> -p <PY_PATH>
 ```
-Here, `<DATA_PATH>` is a directory where all output files are stored.
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -r: Reference genome file `<REF_GENOME>`
+- -f: A table of Dfam annotation you want to analyze `<DFAM_INFO>`
+- -n: Non-redundant repeat annotation in Dfam (`<ASSEMBLY>.nrph.hits.gz`) `<NRPH>`
+- -h: All repeat annotation in Dfam (`<ASSEMBLY>.hits.gz`) `<ALL>`
+- -a: A line-separated list of alternative chromosomes in the reference genome of the organism `<ALT_CHR_LIST>`
+- -p: Path to the downloaded ERVscanner directory
 
+The process generate a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets.
 
-
-After making directories, run `filter_reads.sh`.
+After finishing preparation, run `filter_reads.sh`.
 ```
-bash filter_reads.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE> -b <QUERY_BED> -q <QUALITY> -c <CLUSTER_THRESHOLD> -a <ALT_CHR_LIST>
+bash filter_reads.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE> -q <QUALITY> -c <CLUSTER_THRESHOLD>
 ```
 This process requires many parameters and takes the longest time if samplesize is big. Make sure all nessesary parameters are given.
 - -s: A file name of sample list `<SAMPLE_LIST>`
 - -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
-- -r: Reference genome file `<REF_GENOME>`
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
-- -b: BED file defining masked regions (MRs). `QUERY_BED`.
 - -q: Threshold to define uniquely mapped reads. default: 30
 - -c: Threshold of the number of uniqly mapped reads to define read culster. default: 5
-- -a: A line-separated list of alternative chromosomes in the reference genome of the organism. `<ALT_CHR_LIST>`
 
 `filter_reads.sh` can be parallelized. By dividing `<SAMPLE_LIST>` file, you can do it manually.
 
 Run `remap_reads.sh`. 
 ```
-bash remap_reads.sh -f <ALL_REPEAT_FASTA> -n <NCORE> -d <DATA_PATH>
+bash remap_reads.sh -d <DATA_PATH> -n <NCORE>
 ```
-- -f: Multi-fasta file of target repeat sequences you want to identify. `<ALL_REPEAT_FASTA>`
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -n: Number of core used. default: 1
 
@@ -134,21 +132,19 @@ bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 
 Run `filter_loci.sh`. This script process all samples at once.
 ```
-bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD> -e <ERV_CLASS>
+bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
 - -p: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
-- -e: A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file.
 
 Run `genotype_ins.sh`. This process can be manually parallelized.
 
 ```
-bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE>
+bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
 - -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
-- -r: Reference genome file `<REF_GENOME>`
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
@@ -157,6 +153,10 @@ Run `make_vcf.sh`.
 ```
 bash make_vcf.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
+
+- -s: A file name of sample list `<SAMPLE_LIST>`
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+
 The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
 
