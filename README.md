@@ -50,7 +50,15 @@ Before you start to run the pipeline, you have to prepare the following files fo
    ```
 1. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
 1. Reference genome sequence (`<REF_GENOME>` file)
-1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
+1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file). The example of file is shown below.
+   ```
+chr1_GL456210_random	169725	2764476617	70	71
+chr5_JH584299_random	953012	2766819800	70	71
+chr7_GL456219_random	175968	2767786565	70	71
+chrX_GL456233_random	336933	2767965185	70	71
+chrY_JH584300_random	182347	2768307070	70	71
+chrUn_GL456239	40056	2769074566	70	71
+   ```
 1. Dfam annotation of all and non-redundant set. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL>` and `<NRPH>` in `preprocess.sh`.
 
 ## Description of each shell script
