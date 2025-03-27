@@ -110,7 +110,7 @@ bash filter_reads.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_T
 ```
 This process requires many parameters and takes the longest time if samplesize is big. Make sure all nessesary parameters are given.
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
@@ -132,7 +132,7 @@ Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the proces
 bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
 - -n: Number of core used. default: 1
 
 Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the process in parallel manually.
@@ -141,7 +141,7 @@ Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the proces
 bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
 - -n: Number of core used. default: 1
 
 Run `filter_loci.sh`. This script process all samples at once.
@@ -158,7 +158,7 @@ Run `genotype_ins.sh`. This process can be manually parallelized.
 bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
@@ -169,7 +169,7 @@ bash make_vcf.sh -s <SAMPLE_LIST> -d <DATA_PATH>
 ```
 
 - -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `mkdir.sh`.
+- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
 
 The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
