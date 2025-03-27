@@ -129,3 +129,4 @@ python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_
 python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
 sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed | bedtools merge -d 50 - > $DATA_PATH/dfam_info/nrph.sorted.bed
 bedtools getfasta -fi $DATA_PATH/reference/reference.fasta -name+ -bed $DATA_PATH/dfam_info/nrph.sorted.bed -s -fo $DATA_PATH/check_seq/bwa/subject/nrph.fasta
+bwa index $DATA_PATH/check_seq/bwa/subject/nrph.fasta
