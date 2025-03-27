@@ -18,6 +18,11 @@ if [[ -z "$DATA_PATH" ]]; then
   exit 1
 fi
 
+if [[ ! -d "$DATA_PATH" ]]; then
+  echo "Error: Directory '$DATA_PATH' not found." >&2
+  exit 1
+fi
+
 date
 
 echo "=== process4: merging fastq ==="
