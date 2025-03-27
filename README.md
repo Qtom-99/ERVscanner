@@ -37,8 +37,6 @@ Following python librries are also required. You can install those libraries usi
 - pandas
 - pysam
 
-
-
 ## Input files
 
 Before you start to run the pipeline, you have to prepare the following files for input.
@@ -51,55 +49,19 @@ Before you start to run the pipeline, you have to prepare the following files fo
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
    ```
 1. A line-separated list of ERV classes you want to analyze, corresponding to the third column of `<DFAM_ERV>` file. (`<ERV_CLASS>` file)
-1. Multi-fasta file of repeat sequences. This file could include all non-target repeat sequences such as SINE and LINE. Including non-ERV sequences decrease the false-positive rate (`<ALL_REPEAT_FASTA>` file)
 1. Line-delimited list of all samples (`<SAMPLE_LIST>` file)
-1. BED file of ERV regions obtained from DFAM (`<QUERY_BED>` file). The shell script assumes this file is stored in `<DATA_PATH>` directory.
 1. Reference genome sequence (`<REF_GENOME>` file)
 1. A line-separated list of alternative chromosomes in the reference genome of the organism (`<ALT_CHR_LIST>` file)
 
 #### How to prepare <QUERY_BED>
 
-Annotation of repeat regions (`*.hits.gz`) can be downloaded from the website of Dfam. Here is a link to the version 3.8 release ([Dfam 3.8 annotation](https://dfam.org/releases/Dfam_3.8/annotations/)).
 
-First, download `<ASSEMBLY>.hits.gz`, such as `mm10.hits.gz` and run the following command. The python script `wordgrep.py` is in `utils` directory.
-
-`<ERV_LIST>` is a line-separated non-redundant text file listing `NAME` column of Dfam annotation (see `<DFAM_INFO>`), which you want to find. You can make the file using the following command
-
-```
-cut -f2 <DFAM_INFO> | uniq > <ERV_LIST>
-```
-The `<ERV_LIST>` file is used for the input of `wordgrep.py` script.
-```
-python wordgrep.py <ASSEMBLY>.hits.gz <ERV_LIST> <OUTPUT_FILE.hits.gz>
-```
-
-Next, run `make_bed.py` in `utils` directory to convert the file to BED format.
-
-```
-python make_bed.py <ASSEMBLY>.hits.gz <QUERY_BED>
-```
-The output file is `<QUERY_BED>` file.
-
-#### How to prepare <ALL_REPEAT_FASTA>
-
-Download `<ASSEMBLY>.nrph.hits.gz`, such as `mm10.nrph.hits.gz` and run `make_bed.py` in `utils` directory.
-```
-python make_bed.py <ASSEMBLY>.nrph.hits.gz <OUTPUT.bed>
-```
-Sort the bed file.
-```
-sort -V -k1,1 -k2,2 <OUTPUT.bed> | bedtools merge -d 50 - > <MERGED.bed>
-```
-Then generate multi-fasta file.
-```
-bedtools getfasta -fi <REF_GENOME> -name+ -bed <MERGED.bed> -s -fo <ALL_REPEAT_FASTA>
-```
 The fasta file is later move to a different directory.
 
 ## Description of each shell script
 
 1. `preprocess.sh`
-   If you run this shell script in your working directory, it will generate nessesary directories. 
+   If you run this shell script in your working directory, it will generate nessesary directories and prepare all necessary files. 
 1. `filter_reads.sh`, `filter_reads_MR.sh`
    - Extracting both read pairs in which one of the paired ends is mapped to an ERV region in the reference genome (add_pipe1 uses pairs in which both are mapped to MRs)
    - Estimation of insertion position Extract reads that map to non-ERV regions
@@ -124,18 +86,7 @@ bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -b <QUERY_BED
 ```
 Here, `<DATA_PATH>` is a directory where all output files are stored.
 
-After making the directories, the following files are moved to generated directories.
-- `<QUERY_BED>` file is moved to `<DATA_PATH>`.
-- `<ALL_REPEAT_FATA>` file is moved to `<DATA_PATH>/check_seq/bwa/subject`.
-- `<DRAM_INFO>` file is moved to `<DATA_PATH>/dfam_info`.
-- `<ERV_CLASS>` file is move to `<DATA_PATH>`.
 
-```
-mv <QUERY_BED> <DATA_PATH>
-mv <ALL_REPEAT_FASTA> <DATA_PATH>/chech_seq/bwa/subject/
-mv <DFAM_INFO> <DATA_PATH>/dfam_info/
-mv <ERV_CLASS> <DATA_PATH>/
-```
 
 After making directories, run `filter_reads.sh`.
 ```
