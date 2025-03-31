@@ -28,6 +28,10 @@ eval $(awk -F: '
     {print $1"=\"" $2 "\""}
 ' "$CONFIG_FILE")
 
+REF_GENOME="$DATA_PATH/reference/reference.fasta"
+QUERY_BED="$DATA_PATH/dfam_info/target.bed"
+ALT_CHR_LIST=$DATA_PATH/reference/alt_chr_list
+
 while read line
 do
 date
