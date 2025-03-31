@@ -11,7 +11,7 @@ while getopts "d:n:" opt; do
   esac
 done
 
-TARGET_FASTA="$DATA_PATH/dfam_info/nrph.fasta"
+TARGET_REPEAT_FASTA="$DATA_PATH/check_seq/bwa/subject/nrph.fasta"
 
 if [[ -z "$DATA_PATH" ]]; then
   echo "Error: requied option values are missing" >&2
@@ -27,7 +27,7 @@ date
 
 echo "=== process4: merging fastq ==="
 cat $DATA_PATH/check_seq/fq/sampledata/*.fq > $DATA_PATH/check_seq/fq/allsample_ERVread.fq
-bwa mem -t $NCORE -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam $DATA_PATH/check_seq/bwa/subject/$TARGET_REPEAT_FASTA $DATA_PATH/check_seq/fq/allsample_ERVread.fq
+bwa mem -t $NCORE -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam $TARGET_REPEAT_FASTA $DATA_PATH/check_seq/fq/allsample_ERVread.fq
 samtools view -@ $NCORE -F 2048 -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs_F2048.bam $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam
 samtools view $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs_F2048.bam | cut -f 1-6 - | sort -k1,1 - > $DATA_PATH/check_seq/bwa/result/mapping_info_sort
 echo "=== process4: finishing fastq merge and remapping ==="
