@@ -141,7 +141,7 @@ bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD>
 ```
 - -s: A file name of sample list `<SAMPLE_LIST>`
 - -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
-- -p: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
+- -m: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
 
 Run `genotype_ins.sh`. This process can be manually parallelized.
 
