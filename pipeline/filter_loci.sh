@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # default
-$threshold=0.7
+$threshold="0.7"
 
 # getting option values
 while getopts "d:s:m:" opt; do
