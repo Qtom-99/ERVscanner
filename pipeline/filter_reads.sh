@@ -2,33 +2,34 @@
 # samtools 1.20 or higher is recommended
 # for input files, please see README.md file
 
-# default values
-QUALITY=30
-CLUSTER_THRESHOLD=5
-INPUT_TYPE="bam"
+# 設定ファイルの指定
+CONFIG_FILE="$1"
 
-# getting option values
-while getopts "i:s:r:t:d:n:q:c:" opt; do
-  case $opt in
-    s) SAMPLE="$OPTARG" ;;
-    i) INPUT_PATH="$OPTARG" ;;
-    t) INPUT_TYPE="$OPTARG" ;;
-    d) DATA_PATH="$OPTARG" ;;
-    n) NCORE="$OPTARG" ;;
-    q) QUALITY="$OPTARG" ;;
-    c) CLUSTER_THRESHOLD="$OPTARG" ;;
-    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
-  esac
-done
-
-REF_GENOME="$DATA_PATH/reference/reference.fasta"
-QUERY_BED="dfam_info/target.bed"
-ALT_CHR_LIST=$DATA_PATH/reference/alt_chr_list
-
-if [[ -z "$SAMPLE" || -z "$INPUT_PATH" || -z "$DATA_PATH" ]]; then
-  echo "Error: requied option values are missing" >&2
-  exit 1
+# 設定ファイルが指定されているか確認
+if [ -z "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file not specified."
+    echo "Usage: $0 <config_file>"
+    exit 1
 fi
+
+# 設定ファイルが存在するか確認
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
+fi
+
+# reading confing file
+eval $(awk -F: '
+    # コメント・空行をスキップ
+    /^[[:space:]]*$/ {next}      # skip empty line
+    /^[[:space:]]*#/ {next}      # ignore comment line
+
+    # remove spaces
+    {gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2)}
+
+    # exporting parameters
+    {print $1"=\"" $2 "\""}
+' "$CONFIG_FILE")
 
 while read line
 do
