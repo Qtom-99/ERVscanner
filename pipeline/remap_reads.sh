@@ -1,27 +1,34 @@
 #!/bin/bash
 
-# default values
-NCORE=1
+# get config file
+CONFIG_FILE="$1"
 
-# getting option values
-while getopts "d:n:" opt; do
-  case $opt in
-    d) DATA_PATH="$OPTARG" ;;
-    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
-  esac
-done
+# checking the existence of config file
+if [ -z "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file not specified."
+    echo "Usage: $0 <config_file>"
+    exit 1
+fi
+
+#  checking the existence of config file
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
+fi
+
+# reading confing file
+eval $(awk -F: '
+    /^[[:space:]]*$/ {next}      # skip empty line
+    /^[[:space:]]*#/ {next}      # ignore comment line
+
+    # remove spaces
+    {gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2)}
+
+    # exporting parameters
+    {print $1"=\"" $2 "\""}
+' "$CONFIG_FILE")
 
 TARGET_REPEAT_FASTA="$DATA_PATH/check_seq/bwa/subject/nrph.fasta"
-
-if [[ -z "$DATA_PATH" ]]; then
-  echo "Error: requied option values are missing" >&2
-  exit 1
-fi
-
-if [[ ! -d "$DATA_PATH" ]]; then
-  echo "Error: Directory '$DATA_PATH' not found." >&2
-  exit 1
-fi
 
 date
 
