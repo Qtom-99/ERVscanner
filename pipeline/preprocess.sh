@@ -128,8 +128,13 @@ cut -f3 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_class.txt
 echo "=== generating target bed file ==="
 python3 $DATA_PATH/script/wordgrep.py $TARGET $DATA_PATH/dfam_info/target_name.txt $DATA_PATH/dfam_info/target.hits.gz
 echo "=== generating target bed file: finished ==="
-python3 $DATA_PATH/script/make_bed.py $DATA_PATH/dfam_info/target.hits.gz $DATA_PATH/dfam_info/target.bed
-python3 $DATA_PATH/script/make_bed.py $NRPH $DATA_PATH/dfam_info/nrph.bed
-sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed | bedtools merge -d 50 - > $DATA_PATH/dfam_info/nrph.sorted.bed
+zcat $DATA_PATH/dfam_info/target.hits.gz | cut -f 1,10,11  > $DATA_PATH/dfam_info/target.hits_convert.bed
+python3 $DATA_PATH/script/convert_bed.py $DATA_PATH/dfam_info/target.hits_convert.bed  $DATA_PATH/dfam_info/target_pre.bed
+sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/target_pre.bed | bedtools merge -d 50 -i - > $DATA_PATH/dfam_info/target.bed
+rm $DATA_PATH/dfam_info/target_pre.bed
+zcat $NRPH | awk 'BEGIN {OFS="\t"} {print $1, $10, $11, $3, $3, $9}'  > $DATA_PATH/dfam_info/hg38.nrph.hits_convert.bed
+python3 $DATA_PATH/script/convert_bed.py  $DATA_PATH/dfam_info/hg38.nrph.hits_convert.bed  $DATA_PATH/dfam_info/nrph.bed
+sort -V -k1,1 -k2,2 $DATA_PATH/dfam_info/nrph.bed  > $DATA_PATH/dfam_info/nrph.sorted.bed
 bedtools getfasta -fi $DATA_PATH/reference/reference.fasta -name+ -bed $DATA_PATH/dfam_info/nrph.sorted.bed -s -fo $DATA_PATH/check_seq/bwa/subject/nrph.fasta
 bwa index $DATA_PATH/check_seq/bwa/subject/nrph.fasta
+
