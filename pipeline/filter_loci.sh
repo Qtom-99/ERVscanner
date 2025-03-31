@@ -1,35 +1,34 @@
 #!/bin/bash
 
-# default
-threshold="0.7"
+# get config file
+CONFIG_FILE="$1"
 
-# getting option values
-while getopts "d:s:m:" opt; do
-  case $opt in
-    s) SAMPLE="$OPTARG" ;;
-    d) DATA_PATH="$OPTARG" ;;
-    m) threshold="$OPTARG" ;;
-    \?) echo "Usage: $0 [-i input] [-o output]" >&2; exit 1 ;;
-  esac
-done
+# checking the existence of config file
+if [ -z "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file not specified."
+    echo "Usage: $0 <config_file>"
+    exit 1
+fi
+
+#  checking the existence of config file
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
+fi
+
+# reading confing file
+eval $(awk -F: '
+    /^[[:space:]]*$/ {next}      # skip empty line
+    /^[[:space:]]*#/ {next}      # ignore comment line
+
+    # remove spaces
+    {gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2)}
+
+    # exporting parameters
+    {print $1"=\"" $2 "\""}
+' "$CONFIG_FILE")
 
 ACCESSIONLIST="$DATA_PATH/dfam_info/target_class.txt"
-
-if [[ -z "$SAMPLE" || -z "$DATA_PATH" ]]; then
-  echo "Error: requied option values are missing" >&2
-  exit 1
-fi
-
-# chekcing file does exist
-if [[ ! -f "$SAMPLE" ]]; then
-  echo "Error: File '$SAMPLE' not found." >&2
-  exit 1
-fi
-
-if [[ ! -d "$DATA_PATH" ]]; then
-  echo "Error: Directory '$DATA_PATH' not found." >&2
-  exit 1
-fi
 
 date
 echo "=== process7: filtering loci by checking the insertion contents and directions  ==="
