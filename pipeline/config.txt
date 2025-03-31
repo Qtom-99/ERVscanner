@@ -21,7 +21,7 @@ NRPH_REPEAT:
 ALL_REPEAT:
 # A line-separated list of alternative chromosomes in the reference genome of the organism
 ALT_CHR_LIST: 
-# Path to the downloaded ERVscanner directory
+# Path to the downloaded ERVscanner python directory. ex) /home/username/ERVscanner/python
 PY_PATH: 
 
 ### Parameters adjustable for each anlaysis
