@@ -153,6 +153,7 @@ bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_T
 - -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
 - -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
 - -n: Number of core used. default: 1
+- -m: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
 
 Run `make_vcf.sh`. 
 ```
