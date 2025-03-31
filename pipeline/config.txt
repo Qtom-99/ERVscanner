@@ -1,4 +1,4 @@
-＃ config file for ERVscanner
+# config file for ERVscanner
 
 ### Parameters related to input and output
 # A file name of sample list. They should be matched to the basename of CRAM/BAM files.
