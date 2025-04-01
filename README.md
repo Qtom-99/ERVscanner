@@ -89,7 +89,50 @@ Download all files from github. The command create a directory `ERVscanner`.
 git clone https://github.com/Qtom-99/ERVscanner.git
 ```
 
+Fill in the control file, `config.txt`. You can find it in the `pipeline` directory.
+
+The following items should be given.
+
+#### SAMPLE
+- A file name of sample list. They should be matched to the basename of CRAM/BAM files.
+#### DATA_PATH
+- Data directory. All data is stored in this directory.
+
+# Directory where your bam or cram files are stored
+INPUT_PATH: <INPUT_PATH>
+# Input type. bam, BAM, cram, CRAM. Case sensitive
+TYPE: bam
+
+### Required files
+# Reference genome file
+REF_GENOME:<REF_GENOME>
+# A table of Dfam annotation you want to analyze
+DFAM_INFO: <DFAM_INFO>
+# Non-redundant repeat annotation in Dfam (<ASSEMBLY>.nrph.hits.gz)
+NRPH_REPEAT: <NRPH_REPEAT>
+# All repeat annotation in Dfam (<ASSEMBLY>.hits.gz)
+ALL_REPEAT: <ALL_REPEAT>
+# A line-separated list of alternative chromosomes in the reference genome of the organism
+ALT_CHR_LIST: <ALT_CHR_LIST>
+# Path to the downloaded ERVscanner python directory. ex) /home/username/ERVscanner/python
+PY_PATH: 
+
+### Parameters adjustable for each anlaysis
+# Number of core used
+NCORE: 1
+# MAPQ threshold to define uniquely mapped reads
+MAPQ_THRESHOLD: 30
+# Threshold of the number of uniqly mapped reads to define read culster
+CLUSTER_THRESHOLD: 5
+# Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset
+IDENTITY_THRESHOLD: 0.7
+
+
 You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
+
+
+
+
 ```
 bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH_REPEAT> -h <ALL_REPEAT> -a <ALT_CHR_LIST> -p <ERVscanner_PATH>
 ```
