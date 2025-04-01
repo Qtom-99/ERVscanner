@@ -2,27 +2,27 @@
 
 ### Parameters related to input and output
 # A file name of sample list. They should be matched to the basename of CRAM/BAM files.
-SAMPLE: 
+SAMPLE: <SAMPLE_LIST>
 # Data directory. All data is stored in this directory.
-DATA_PATH: 
+DATA_PATH: <DATA_PATH>
 # Directory where your bam or cram files are stored
-INPUT_PATH: 
+INPUT_PATH: <INPUT_PATH>
 # Input type. bam, BAM, cram, CRAM. Case sensitive
 TYPE: bam
 
 ### Required files
 # Reference genome file
-REF_GENOME:
+REF_GENOME: <REF_GENOME>
 # A table of Dfam annotation you want to analyze
-DFAM_INFO:
+DFAM_INFO: <DFAM_INFO>
 # Non-redundant repeat annotation in Dfam (<ASSEMBLY>.nrph.hits.gz)
-NRPH_REPEAT: 
+NRPH_REPEAT: <NRPH_REPEAT>
 # All repeat annotation in Dfam (<ASSEMBLY>.hits.gz)
-ALL_REPEAT:
+ALL_REPEAT: <A++_REPEAT>
 # A line-separated list of alternative chromosomes in the reference genome of the organism
-ALT_CHR_LIST: 
+ALT_CHR_LIST: <ALT_CHR_LIST>
 # Path to the downloaded ERVscanner python directory. ex) /home/username/ERVscanner/python
-PY_PATH: 
+PY_PATH: <PY_PATH>
 
 ### Parameters adjustable for each anlaysis
 # Number of core used
