@@ -29,14 +29,14 @@ eval $(awk -F: '
 ' "$CONFIG_FILE")
 
 REF_GENOME="$DATA_PATH/reference/reference.fasta"
-QUERY_BED="$DATA_PATH/dfam_info/target.bed"
+QUERY_BED="dfam_info/target.bed"
 ALT_CHR_LIST="$DATA_PATH/reference/alt_chr_list"
 
 while read line
 do
 date
 echo "=== process1: SAMPLE:${line} estracting ERV regions ==="
-samtools view -@ "$NCORE" -T "$REF_GENOME" -L $QUERY_BED -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
+samtools view -@ "$NCORE" -T "$REF_GENOME" -L $DATA_PATH/$QUERY_BED -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
 echo "=== process1: SAMPLE:${line} estracting ERV regions: finished ==="
 date
 echo "=== process2: SAMPLE:${line} insertion estimation ==="
