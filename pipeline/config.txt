@@ -8,7 +8,7 @@ DATA_PATH: <DATA_PATH>
 # Directory where your bam or cram files are stored
 INPUT_PATH: <INPUT_PATH>
 # Input type. bam, BAM, cram, CRAM. Case sensitive
-TYPE: bam
+INPUT_TYPE: bam
 
 ### Required files
 # Reference genome file
