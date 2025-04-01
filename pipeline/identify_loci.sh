@@ -33,7 +33,7 @@ echo "=== process6: checking ID of insertions ==="
 while read line
 do
 python3 $PY_PATH/find_POS_key4.py $DATA_PATH/sampledata/$line/read_info/${line} $DATA_PATH/allsample_merge/POSITION_LIST $DATA_PATH/sampledata/$line/read_info/${line}_data.csv $NCORE
-python3 $PY_PATH/add_strand.py $DATA_PATH/sampledata/$line/read_info/${line}_data.csv $DATA_PATH/sampledata/$line/read_info/${line}_*reads_in_cluster.bed > $DATA_PATH/sampledata/$line/read_info/${line}_data_strand.csv
+python3 $PY_PATH/add_strand.py $DATA_PATH/sampledata/$line/read_info/${line}_data.csv $DATA_PATH/sampledata/$line/read_info/${line}_${CLUSTER_THRESHOLD}reads_in_cluster.bed > $DATA_PATH/sampledata/$line/read_info/${line}_data_strand.csv
 cp $DATA_PATH/sampledata/$line/read_info/${line}_data_strand.csv $DATA_PATH/check_seq/master_file/sampledata/.
 echo "=== process6: checking ID of insertions: completed ${line} ==="
 done < $SAMPLE
