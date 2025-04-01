@@ -97,28 +97,28 @@ __SAMPLE__
 - A file name of sample list. They should be matched to the basename of CRAM/BAM files. <SAMPLE_LIST>
 
 __DATA_PATH__
-- Data directory. All data is stored in this directory
+- Data directory. All data is stored in this directory. <DATA_PATH>
 
 __INPUT_PATH__
 - Directory where your bam or cram files are stored
   
 __TYPE__
-- Input type. bam, BAM, cram, CRAM. Case sensitive
+- Input type. bam, BAM, cram, CRAM. case sensitive
   
 __REF_GENOME__
 - Reference genome file <REF_GENOME>
 
 __DFAM_INFO__
-- A table of Dfam annotation you want to analyze <DFAM_INFO>
+- A table of Dfam annotation you want to analyze. <DFAM_INFO>
 
 __NRPH_REPEAT__
-- Non-redundant repeat annotation in Dfam (<ASSEMBLY>.nrph.hits.gz) <NRPH_REPEAT>
+- Non-redundant repeat annotation in Dfam (<ASSEMBLY>.nrph.hits.gz). <NRPH_REPEAT>
 
 __ALL_REPEAT__
-- All repeat annotation in Dfam (<ASSEMBLY>.hits.gz) <ALL_REPEAT>
+- All repeat annotation in Dfam (<ASSEMBLY>.hits.gz). <ALL_REPEAT>
 
 __ALT_CHR_LIST__
-- A line-separated list of alternative chromosomes in the reference genome of the organism <ALT_CHR_LIST>
+- A line-separated list of alternative chromosomes in the reference genome of the organism. <ALT_CHR_LIST>
 
 __PY_PATH__ 
 - Path to the downloaded ERVscanner python directory. ex) `/home/username/ERVscanner/python`
