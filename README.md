@@ -1,11 +1,11 @@
 # ERVscanner
 A data analysis pipeline to estimate ERV insertion based on short-read sequence data in a fast and efficient way.
-]
+---
 ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retrovirus) insertions using short-read whole-genome sequencing data.
 
 The pipeline consists of two parallel workflows:
 
-- Detecting insertions within annotated repeat regions in the reference genome (MRs)
+- Detecting insertions within annotated repeat regions in the reference genome (masked region, MRs)
 - Detecting insertions outside MRs.
 
 The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
