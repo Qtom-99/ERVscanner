@@ -1,5 +1,6 @@
 import pysam
 import argparse
+import re
 
 def load_exclude_chroms(file_path):
     """
@@ -26,9 +27,9 @@ def filter_bam_by_xa(input_bam, output_bam, removed_bam, exclude_chroms):
          pysam.AlignmentFile(removed_bam, "wb", header=bam_in.header) as bam_removed:
         
         for read in bam_in:
-            xa_tag = read.get_tag("XA") if read.has_tag("XA") else None
-
-            if xa_tag and any(chrom in xa_tag for chrom in exclude_chroms):
+            xa_tag = read.get_tag("XA") if read.has_tag("XA") or read.has_tag("SA") else None
+            cigar = xa_tag.split(':')[2].split(',')[4]
+            if xa_tag and any(chrom in xa_tag for chrom in exclude_chroms) and re.match('r/\d+M/', cigar):
                 # Write removed reads to a separate BAM file
                 bam_removed.write(read)
             else:
