@@ -143,7 +143,7 @@ You first run `preprocess.sh` to prepare directories and files nessesary for the
 ```
 bash preprocess.sh config.txt
 ```
-The `preprocess.sh` generates a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets.
+The `preprocess.sh` generates a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets. You can later change the parameters for threshold setting and re-run the pipeline without running `preprocess.sh`.
 
 After finishing preparation, run `filter_reads.sh`.
 ```
