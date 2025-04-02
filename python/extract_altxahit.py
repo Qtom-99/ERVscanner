@@ -34,25 +34,17 @@ def filter_bam_by_xa(input_bam, output_bam, removed_bam, exclude_chroms):
             # Initialize a flag to indicate if the read should be removed
             remove_read = False
 
-            # Check XA tag if available
-            if xa_tag:
-                xa_alignments = xa_tag.split(';')[:-1]  # Remove last empty entry
-                for aln in xa_alignments:
-                    fields = aln.split(',')
-                    if len(fields) >= 3:
-                        remove_read = True
+            # Check XA tag
+            if xa_tag and any(chrom in xa_tag for chrom in exclude_chroms):
+                remove_read = True
 
             # Check SA tag if XA tag didn't trigger removal
             if sa_tag and not remove_read:
-                sa_alignments = sa_tag.split(';')[:-1]
+                sa_alignments = parse_sa_tag(sa_tag)
                 for aln in sa_alignments:
-                    fields = aln.split(',')
-                    if len(fields) >= 3:
-                        chrom = fields[0]
-                        cigar = fields[3]  # In SA, CIGAR is at position 4 (0-indexed)
-                        if any(chrom == exc for exc in exclude_chroms) and not re.match(r'^\d+S', cigar):
-                            remove_read = True
-                            break
+                    if aln[0] in exclude_chroms and not re.match(r'^\d+S', aln[3]):
+                        remove_read = True
+                        break
             # Write to bam_removed if the read meets the criteria, otherwise to bam_out
             if remove_read:
                 bam_removed.write(read)
