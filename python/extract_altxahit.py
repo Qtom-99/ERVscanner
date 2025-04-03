@@ -2,6 +2,27 @@ import pysam
 import argparse
 import re
 
+def parse_sa_tag(sa_tag):
+    """
+    Parse the SA tag to extract information about each supplementary alignment.
+    :param sa_tag: SA tag string.
+    :return: List of supplementary alignment information.
+    """
+    alignments = sa_tag.split(';')
+    sa_info = []
+    for aln in alignments:
+        if aln:
+            fields = aln.split(',')
+            if len(fields) >= 6:
+                chrom = fields[0]
+                pos = int(fields[1])
+                strand = fields[2]
+                cigar = fields[3]
+                mapq = int(fields[4])
+                nm = int(fields[5])
+                sa_info.append((chrom, pos, strand, cigar, mapq, nm))
+    return sa_info
+
 def load_exclude_chroms(file_path):
     """
     Load a list of chromosomes to exclude from a text file (one per line).
