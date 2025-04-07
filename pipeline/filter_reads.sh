@@ -90,5 +90,11 @@ samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/read_info/${line}_posre
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam
 bedtools bamtofastq -i $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam -fq $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq
 cp $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq $DATA_PATH/check_seq/fq/sampledata/.
+rm $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam
+rm $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam
+rm $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn_xor.bed
+rm $DATA_PATH/sampledata/${line}/${line}_pair.bed
+rm $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_F256_F2048.bam
+rm $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_F256_F2048.bam
 echo "=== process3: SAMPLE:${line} generating fastq files of ERV regions: finished ==="
 done < $SAMPLE
