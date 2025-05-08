@@ -34,7 +34,7 @@ while read line
 do
 date
 echo "=== process8: SAMPLE:${line} genotyping  ==="
-samtools view -h $DATA_PATH/sampledata/${line}/read_info/${line}_ERVposition_read_true.bam | awk '/^@/ || $6 ~ /[0-9]+[SH]/' | samtools view -b -o $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bam -
+samtools view -h $DATA_PATH/sampledata/${line}/read_info/cluster_ERVpos_merge.bam | awk '/^@/ || $6 ~ /[0-9]+[SH]/' | samtools view -b -o $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bam -
 bedtools bamtobed -i $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bam > $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bed
 sort -V -k1,1 -k2,2 $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads.bed > $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads_sort.bed
 bedtools merge -i $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads_sort.bed -d 50 -s -c 6 -o distinct > $DATA_PATH/sampledata/${line}/clip/${line}_clipped_reads_sort_merged50.bed

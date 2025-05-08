@@ -1,5 +1,27 @@
 import pysam
 import argparse
+import re
+
+def parse_sa_tag(sa_tag):
+    """
+    Parse the SA tag to extract information about each supplementary alignment.
+    :param sa_tag: SA tag string.
+    :return: List of supplementary alignment information.
+    """
+    alignments = sa_tag.split(';')
+    sa_info = []
+    for aln in alignments:
+        if aln:
+            fields = aln.split(',')
+            if len(fields) >= 6:
+                chrom = fields[0]
+                pos = int(fields[1])
+                strand = fields[2]
+                cigar = fields[3]
+                mapq = int(fields[4])
+                nm = int(fields[5])
+                sa_info.append((chrom, pos, strand, cigar, mapq, nm))
+    return sa_info
 
 def load_exclude_chroms(file_path):
     """
@@ -26,13 +48,28 @@ def filter_bam_by_xa(input_bam, output_bam, removed_bam, exclude_chroms):
          pysam.AlignmentFile(removed_bam, "wb", header=bam_in.header) as bam_removed:
         
         for read in bam_in:
+            # Check if XA or SA tag exists
             xa_tag = read.get_tag("XA") if read.has_tag("XA") else None
+            sa_tag = read.get_tag("SA") if read.has_tag("SA") else None
 
+            # Initialize a flag to indicate if the read should be removed
+            remove_read = False
+
+            # Check XA tag
             if xa_tag and any(chrom in xa_tag for chrom in exclude_chroms):
-                # Write removed reads to a separate BAM file
+                remove_read = True
+
+            # Check SA tag if XA tag didn't trigger removal
+            if sa_tag and not remove_read:
+                sa_alignments = parse_sa_tag(sa_tag)
+                for aln in sa_alignments:
+                    if aln[0] in exclude_chroms and not re.match(r'^\d+S', aln[3]):
+                        remove_read = True
+                        break
+            # Write to bam_removed if the read meets the criteria, otherwise to bam_out
+            if remove_read:
                 bam_removed.write(read)
             else:
-                # Write retained reads to the output BAM file
                 bam_out.write(read)
 
 def main():

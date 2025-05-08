@@ -1,11 +1,11 @@
 # ERVscanner
 A data analysis pipeline to estimate ERV insertion based on short-read sequence data in a fast and efficient way.
-]
+---
 ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retrovirus) insertions using short-read whole-genome sequencing data.
 
 The pipeline consists of two parallel workflows:
 
-- Detecting insertions within annotated repeat regions in the reference genome (MRs)
+- Detecting insertions within annotated repeat regions in the reference genome (masked region, MRs)
 - Detecting insertions outside MRs.
 
 The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
@@ -89,81 +89,90 @@ Download all files from github. The command create a directory `ERVscanner`.
 git clone https://github.com/Qtom-99/ERVscanner.git
 ```
 
-You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
-```
-bash preprocess.sh -s <SAMPLE_LIST> -d <DATA_PATH> -r <REF_GENOME> -f <DFAM_INFO> -n <NRPH_REPEAT> -h <ALL_REPEAT> -a <ALT_CHR_LIST> -p <ERVscanner_PATH>
-```
-- -s: A file name of sample list `<SAMPLE_LIST>`. They should be matched to the basename of CRAM/BAM files.
-- -d : A path to data. `<DATA_PATH>`
-- -r: Reference genome file
-- -f: A table of Dfam annotation you want to analyze `<DFAM_INFO>`
-- -n: Non-redundant repeat annotation in Dfam (`<ASSEMBLY>.nrph.hits.gz`) `<NRPH_REPEAT>`
-- -h: All repeat annotation in Dfam (`<ASSEMBLY>.hits.gz`) `<ALL_REPEAT>`
-- -a: A line-separated list of alternative chromosomes in the reference genome of the organism `<ALT_CHR_LIST>`
-- -p: Path to the downloaded ERVscanner directory
+Fill in the control file, `config.txt`. You can find it in the `pipeline` directory.
 
-The `preprocess.sh` generates a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets.
+The following items should be given.
+
+__SAMPLE__
+- A file name of sample list. They should be matched to the basename of CRAM/BAM files. <SAMPLE_LIST>
+
+__DATA_PATH__
+- Data directory. All data is stored in this directory. <DATA_PATH>
+
+__INPUT_PATH__
+- Directory where your bam or cram files are stored
+  
+__TYPE__
+- Input type. bam, BAM, cram, CRAM. case sensitive
+  
+__REF_GENOME__
+- Reference genome file <REF_GENOME>
+
+__DFAM_INFO__
+- A table of Dfam annotation you want to analyze. <DFAM_INFO>
+
+__NRPH_REPEAT__
+- Non-redundant repeat annotation in Dfam (<ASSEMBLY>.nrph.hits.gz). <NRPH_REPEAT>
+
+__ALL_REPEAT__
+- All repeat annotation in Dfam (<ASSEMBLY>.hits.gz). <ALL_REPEAT>
+
+__ALT_CHR_LIST__
+- A line-separated list of alternative chromosomes in the reference genome of the organism. <ALT_CHR_LIST>
+
+__PY_PATH__ 
+- Path to the downloaded ERVscanner python directory. ex) `/home/username/ERVscanner/python`
+
+__NCORE__
+- Number of core used. default: 1
+
+__MAPQ_THRESHOLD__
+- MAPQ threshold to define uniquely mapped reads. default: 30
+
+__CLUSTER_THRESHOLD__
+- Threshold of the number of uniqly mapped reads to define read culster. default: 5
+
+__IDENTITY_THRESHOLD__
+- Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
+
+
+All fields are required. Except for <SAMPLE_LIST>, the parameters should be consistent across the script.
+
+You first run `preprocess.sh` to prepare directories and files nessesary for the analysis. ERVscanner produces a lot of intermediate files for checking purpose, but after finishing all procecces, you can delete all intermediate files if you want. Following is the example of command line.
+
+```
+bash preprocess.sh config.txt
+```
+The `preprocess.sh` generates a file `<DATA_PATH>/dfam_info/target_class.txt`. This file is a list of class of ERVs you are going to anlayze. You can edit the file if you want to modify targets. You can later change the parameters for threshold setting and re-run the pipeline without running `preprocess.sh`.
 
 After finishing preparation, run `filter_reads.sh`.
 ```
-bash filter_reads.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE> -q <QUALITY> -c <CLUSTER_THRESHOLD>
+bash filter_reads.sh config.txt
 ```
-This process requires many parameters and takes the longest time if samplesize is big. Make sure all nessesary parameters are given.
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
-- -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
-- -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
-- -n: Number of core used. default: 1
-- -q: Threshold to define uniquely mapped reads. default: 30
-- -c: Threshold of the number of uniqly mapped reads to define read culster. default: 5
-
 `filter_reads.sh` can be parallelized. By dividing `<SAMPLE_LIST>` file, you can do it manually.
 
 Run `remap_reads.sh`. 
 ```
-bash remap_reads.sh -d <DATA_PATH> -n <NCORE>
+bash remap_reads.sh config.txt
 ```
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
-- -n: Number of core used. default: 1
-
 Run `identify_loci.sh`. By dividing `<SAMPLE_LIST>` file, you can run the process in parallel manually.
 
 ```
-bash identify_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -n <NCORE>
+bash identify_loci.sh config.txt
 ```
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
-- -n: Number of core used. default: 1
-
 Run `filter_loci.sh`. This script process all samples at once.
 ```
-bash filter_loci.sh -s <SAMPLE_LIST> -d <DATA_PATH> -p <IDENTITY_THRESHOLD>
+bash filter_loci.sh config.txt
 ```
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d: A path to data. `<DATA_PATH>` This path should be the same as the path given in `preprocess.sh`.
-- -m: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7
-
 Run `genotype_ins.sh`. This process can be manually parallelized.
 
 ```
-bash genotype_ins.sh -s <SAMPLE_LIST> -d <DATA_PATH> -i <INPUT_PATH> -t <INPUT_TYPE> -n <NCORE>
+bash genotype_ins.sh config.txt
 ```
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
-- -i: Directory where your bam or cram files are stored `<INPUT_PATH>`
-- -t: Input type. bam, BAM, cram, CRAM. Case sensitive. default: bam
-- -n: Number of core used. default: 1
-- -m: Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset. default: 0.7 This value should be the same given in `filter_loci.sh`.
-- -q: Threshold to define uniquely mapped reads. default: 30 This value should be the same given in `filter_reads.sh`.
-
 Run `make_vcf.sh`. 
 ```
-bash make_vcf.sh -s <SAMPLE_LIST> -d <DATA_PATH>
+bash make_vcf.sh config.txt
 ```
-
-- -s: A file name of sample list `<SAMPLE_LIST>`
-- -d : A path to data. `<DATA_PATH>` This path should be the same as the path given in the previous processes.
-
 The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
 
