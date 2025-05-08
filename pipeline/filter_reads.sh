@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # get config file
 CONFIG_FILE="$1"
 
@@ -10,11 +11,13 @@ if [ -z "$CONFIG_FILE" ]; then
     exit 1
 fi
 
+
 #  checking the existence of config file
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "Error: Configuration file '$CONFIG_FILE' not found."
     exit 1
 fi
+
 
 # reading confing file
 eval $(awk -F: '
@@ -31,6 +34,20 @@ eval $(awk -F: '
 REF_GENOME="$DATA_PATH/reference/reference.fasta"
 QUERY_BED="dfam_info/target.bed"
 ALT_CHR_LIST="$DATA_PATH/reference/alt_chr_list"
+
+
+# reading confing file
+eval $(awk -F: '
+    # コメント・空行をスキップ
+    /^[[:space:]]*$/ {next}      # skip empty line
+    /^[[:space:]]*#/ {next}      # ignore comment line
+
+    # remove spaces
+    {gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2)}
+
+    # exporting parameters
+    {print $1"=\"" $2 "\""}
+' "$CONFIG_FILE")
 
 while read line
 do
