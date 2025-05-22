@@ -63,7 +63,7 @@ done < $SAMPLE
 echo "=== copying and generating files ==="
 cp $REF_GENOME $DATA_PATH/reference/reference.fasta
 samtools faidx $DATA_PATH/reference/reference.fasta
-cp $DFAM_INFO $DATA_PATH/dfam_info/
+cp $DFAM_INFO $DATA_PATH/dfam_info/Dfam_ERV_info
 cp $ALT_CHR_LIST $DATA_PATH/reference/alt_chr_list
 cut -f2 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_name.txt
 cut -f3 $DFAM_INFO | uniq | sort > $DATA_PATH/dfam_info/target_class.txt
