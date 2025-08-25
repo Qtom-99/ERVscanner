@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 
-def swap_columns(input_file, output_file):
+def swap_columns(input_file, output_file, header):
     """
     Read a tab-separated file and swap the values of the second and third columns 
     if the value in the second column is greater than the third column.
@@ -10,7 +10,7 @@ def swap_columns(input_file, output_file):
     :param output_file: Path to the output file
     """
     # Load the file
-    df = pd.read_csv(input_file, sep='\t')
+    df = pd.read_csv(input_file, sep='\t', header=header)
 
     # Swap values if the second column is greater than the third column
     for index, row in df.iterrows():
@@ -32,9 +32,9 @@ def swap_columns(input_file, output_file):
     print(f"Processing completed. Output file: {output_file}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print("Usage: python script.py <input_file> <output_file>")
     else:
         input_file = sys.argv[1]
         output_file = sys.argv[2]
-        swap_columns(input_file, output_file)
+        swap_columns(input_file, output_file, header)
