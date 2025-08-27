@@ -38,8 +38,8 @@ paste $DATA_PATH/check_seq/master_file/allsample_data_merge_sort.csv $DATA_PATH/
 sort -V -k1,1 -k11,11 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master.txt > $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt
 cut -f 1,14 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt > $DATA_PATH/check_seq/master_file/allsample_pos_subject
 awk -F'\t' '{split($2, a, "::"); $2 = a[1]; print $1 "\t" $2}' $DATA_PATH/check_seq/master_file/allsample_pos_subject > $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr
-python3 $PY_PATH/ERVname_to_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr $DATA_PATH/dfam_info/Dfam_ERV_info $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_sed
-python3 $PY_PATH/DFaccession_to_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_sed $DATA_PATH/dfam_info/Dfam_ERV_info $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class
+python3 $PY_PATH/ERVname_to_class.py $DFAM_INFO $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_sed
+python3 $PY_PATH/DFaccession_to_class.py $DFAM_INFO $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class
 python3 $PY_PATH/major_class.py $DATA_PATH/check_seq/master_file/allsample_pos_subject_nochr_class $DATA_PATH/check_seq/master_file/pos_allclass_report $DATA_PATH/check_seq/master_file/pos_majorclass_report
 awk -F'\t' -v threshold="$IDENTITY_THRESHOLD" '$3 >= threshold' "$DATA_PATH/check_seq/master_file/pos_majorclass_report" > "$DATA_PATH/check_seq/master_file/pos_majorclass_${IDENTITY_THRESHOLD//./}up"
 python3 $PY_PATH/extract_wanted_accession.py $DATA_PATH/check_seq/master_file/pos_majorclass_${IDENTITY_THRESHOLD//./}up $ACCESSIONLIST $DATA_PATH/check_seq/master_file/pos_majorclass_${IDENTITY_THRESHOLD//./}up_wanted
