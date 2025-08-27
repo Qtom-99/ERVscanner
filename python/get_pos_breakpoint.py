@@ -39,7 +39,7 @@ def main():
     out_df = pd.DataFrame(results, columns=["chr", "central_base", "posID"])
     out_df.to_csv(args.output_file, sep="\t", index=False, header=False)
 
-    print("ブレークポイントの算出が完了しました。出力ファイル:", args.output_file)
+    print("Breakpoint detection finished. Output file:", args.output_file)
 
 if __name__ == "__main__":
     main()
