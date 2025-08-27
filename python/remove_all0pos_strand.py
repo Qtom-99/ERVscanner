@@ -4,19 +4,19 @@ import pandas as pd
 def main():
     # 引数の設定
     parser = argparse.ArgumentParser(
-        description="サンプルIDを含む TSV ファイルから、全サンプルで0の列および指定された POSITION ID の列を除去します。"
+        description="Remove POSITION ID column"
     )
     parser.add_argument(
         "input_file",
-        help="入力TSVファイルのパス (例: insertion_data.tsv)"
+        help="path to tsv (ex: insertion_data.tsv)"
     )
     parser.add_argument(
         "remove_list_file",
-        help="除去すべきPOSITION IDのリストが記載されたテキストファイルのパス (改行区切り)"
+        # help="除去すべきPOSITION IDのリストが記載されたテキストファイルのパス (改行区切り)"
     )
     parser.add_argument(
         "output_file",
-        help="出力TSVファイルのパス (例: filtered_insertion_data.tsv)"
+        help="path to tsv (ex: filtered_insertion_data.tsv)"
     )
     args = parser.parse_args()
 
@@ -42,7 +42,7 @@ def main():
     result = pd.concat([df["Sample"], filtered_data], axis=1)
     result.to_csv(args.output_file, sep="\t", index=False)
 
-    print("フィルタリングが完了しました。出力ファイル:", args.output_file)
+    print("Filtering finished. Output file:", args.output_file)
 
 if __name__ == "__main__":
     main()
