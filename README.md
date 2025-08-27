@@ -42,7 +42,7 @@ Following python librries are also required. You can install those libraries usi
 Before you start to run the pipeline, you have to prepare the following files for input.
 
 1. BAM or CRAM for each sample
-1. Tab-separated table file (`<DFAM_INFO>` file) of your organism (You can search copy and paste the content at https://dfam.org/browse.). All kinds of repeaences are preferable. Here is an example.
+1. Tab-separated table file (`<DFAM_INFO>` file) of your target repeats (You can search copy and paste the content at https://dfam.org/browse.).
    ```
     DF000001785	IAPLTR1a_Mm	ERV2	Mus musculus	Mouse family of LTR retrotransposons	337
     DF000001786	IAPLTR2a2_Mm	ERV2	Mus musculus	Long terminal repeat of ERV2 Endogenous Retrovirus from mouse.	444
