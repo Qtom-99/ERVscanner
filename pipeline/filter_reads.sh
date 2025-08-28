@@ -106,7 +106,7 @@ bedtools intersect -a $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F
 samtools view -@ $NCORE -F 256 -b $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread.bam | samtools view -@ $NCORE -b -F 2048 -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_F256_F2048.bam -
 samtools view -@ $NCORE -N $DATA_PATH/sampledata/${line}/read_info/${line}_posreadname_nonend_uniq -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_F256_F2048.bam
 samtools sort -@ $NCORE -n -o $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true.bam
-bedtools bamtofastq -i $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam -fq $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq
+samtools fastq $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.bam > $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq
 cp $DATA_PATH/sampledata/${line}/read_info/${line}_ERVread_true_sort.fq $DATA_PATH/check_seq/fq/sampledata/.
 rm $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048.bam
 rm $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap_F256_F2048_sortn.bam
