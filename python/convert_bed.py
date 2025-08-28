@@ -2,32 +2,27 @@ import pandas as pd
 import sys
 
 def swap_columns(input_file, output_file, header):
-    """
-    Read a tab-separated file and swap the values of the second and third columns 
-    if the value in the second column is greater than the third column.
-    
-    :param input_file: Path to the input file
-    :param output_file: Path to the output file
-    """
-    # Load the file
-    df = pd.read_csv(input_file, sep='\t', header=header)
+    if header:
+        df = pd.read_csv(input_file, sep="\t")
+    else:
+        df = pd.read_csv(input_file, sep="\t", header=None)
 
-    # Swap values if the second column is greater than the third column
-    for index, row in df.iterrows():
-        col1 = df.columns[1]
-        col2 = df.columns[2]
+    col1, col2 = df.columns[1], df.columns[2]
 
-        if row.iloc[1] > row.iloc[2]:
-            df.at[index, col1], df.at[index, col2] = row.iloc[2], row.iloc[1]
-            row1 = row.iloc[2]  # now in col1
-        else:
-            row1 = row.iloc[1]  # already the smaller one
+    # convert col1, col2 to numpy array
+    c1, c2 = df[col1].values, df[col2].values
 
-        # Subtract 1 from the smaller value (now in col1)
-        df.at[index, col1] = row1 - 1
+    # swap 
+    mask = c1 > c2
 
-    # Save the modified DataFrame to a new file
-    df.to_csv(output_file, sep='\t', index=False)
+    # swap 
+    c1_new = np.where(mask, c2, c1) - 1  # left -1
+    c2_new = np.where(mask, c1, c2)      # right
+
+    df[col1], df[col2] = c1_new, c2_new
+
+    df_unique = df.drop_duplicates()
+    df_unique.to_csv(output_file, sep="\t", index=False, header=False)
     
     print(f"Processing completed. Output file: {output_file}")
 
