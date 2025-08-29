@@ -60,8 +60,6 @@ Before you start to run the pipeline, you have to prepare the following files fo
    chrUn_GL456239
    ```
 1. Dfam annotation of all and non-redundant repeats. The annotation of Dfam3.8 is downloaded from [Dfam website](https://www.dfam.org/releases/Dfam_3.8/annotations/). There are two types of files in each <ASSEMBLY_VERSION> folder, such as `mm10`. Both `<ASSEMBLY_VERSION>.hits.gz` and `<ASSEMBLY_VERSION>.nrph.hits.gz` should be downloaded. These files correspond to `<ALL_REPEAT>` and `<NRPH_REPEAT>` in `preprocess.sh`.
-2. 
-
 1. If you want to add your custom sequence, add corresponding entries to `<DFAM_INFO>` file, `<DATA_PATH>/bwa/subject/nrph.fasta`, and `<DATA_PATH>/dfam_info/target_class(name).txt`. The latter two files are gerated by `preprocess.sh`. The index file for `nrph.fasta` should be rebuild.
 
 ## Description of shell scripts
