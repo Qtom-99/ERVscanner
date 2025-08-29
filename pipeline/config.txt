@@ -9,8 +9,9 @@ DATA_PATH: <DATA_PATH>
 INPUT_PATH: <INPUT_PATH>
 # Input type. bam, BAM, cram, CRAM. Case sensitive
 INPUT_TYPE: bam
-# Target class/family; 0: Dfam class level, 1: Dfam family level
-TARGET: 0
+# Target. If you want to analyze specific Dfam families, change "target_class.txt" to "target_name.txt"
+# If you add your custom sequence, you can add the correponding entry to the <DFAM_INFO> file, <NRPH_REPEAT> file, and this list. 
+ACCESSIONLIST=${DATA_PATH}/dfam_info/target_class.txt
 
 ### Required files
 # Reference genome file
