@@ -28,8 +28,6 @@ eval $(awk -F: '
     {print $1"=\"" $2 "\""}
 ' "$CONFIG_FILE")
 
-ACCESSIONLIST="$DATA_PATH/dfam_info/target_class.txt"
-
 date
 echo "=== process7: filtering loci by checking the insertion contents and directions  ==="
 cat $DATA_PATH/check_seq/master_file/sampledata/*strand.csv > $DATA_PATH/check_seq/master_file/allsample_data_merge.csv
