@@ -3,17 +3,9 @@ A data analysis pipeline to estimate ERV insertion based on short-read sequence 
 ---
 ERVscanner is a pipeline designed to estimate non-reference ERV (Endogenous Retrovirus) insertions using short-read whole-genome sequencing data.
 
-The pipeline consists of two parallel workflows:
+The pipeline detects insertions within annotated repeat regions in the reference genome (masked region, MRs). Here we ignore insertions within MR, which would be error prone.
 
-- Detecting insertions within annotated repeat regions in the reference genome (masked region, MRs)
-- Detecting insertions outside MRs.
-
-The process described below focuses on identifying insertions outside MRs. The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
-
-To detect insertions within MRs, you must repeat the pipeline with the following modifications:
-
-- Replace `filter_reads.sh` with `filter_reads_MR.sh`
-- Replace `genotype_ins.sh` with `genotype_ins_MR.sh`
+The final genotyped VCF file of insertions is output to `<DATA_PATH>/vcf`.
 
 Change the `<DATA_PATH>` directory accordingly. Then, rerun the pipeline from the beginning.
 
@@ -175,5 +167,11 @@ Run `make_vcf.sh`.
 bash make_vcf.sh config.txt
 ```
 The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
+
+## Change log
+
+#### 2026/2/19
+The pipeline identifying insertions within MR has been deprecated.
+Logics to identify the insertion contents were slightly changed, which yield less false positives in our validation test.
 
 
