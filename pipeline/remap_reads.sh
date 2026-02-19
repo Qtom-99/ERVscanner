@@ -34,9 +34,40 @@ date
 
 echo "=== process4: merging fastq ==="
 cat $DATA_PATH/check_seq/fq/sampledata/*.fq > $DATA_PATH/check_seq/fq/allsample_ERVread.fq
-bwa mem -t $NCORE -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam $TARGET_REPEAT_FASTA $DATA_PATH/check_seq/fq/allsample_ERVread.fq
-samtools view -@ $NCORE -F 2048 -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs_F2048.bam $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs.bam
+
+echo "=== remap to Dfam (keep secondary + supplementary) ==="
+bwa mem -t "$NCORE" -a "$TARGET_REPEAT_FASTA" \
+  "$DATA_PATH/check_seq/fq/allsample_ERVread.fq" \
+| samtools view -@ "$NCORE" -b -o \
+  "$DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.bam"
+
+samtools view -@ $NCORE -F 2048 -o $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs_F2048.bam $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.bam
+
 samtools view $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV_ERVcons_RFs_F2048.bam | cut -f 1-6 - | sort -k1,1 - > $DATA_PATH/check_seq/bwa/result/mapping_info_sort
+
+samtools sort -@ "$NCORE" -n \
+  -o "$DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.qnamesort.bam" \
+  "$DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.bam"
+
+samtools view "$DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.qnamesort.bam" \
+| awk 'BEGIN{OFS="\t"}
+{
+  q=$1; flag=$2; r=$3; pos=$4; mapq=$5; cigar=$6;
+
+  # secondary/supplementary
+  is_sec = and(flag,256)?1:0;
+  is_supp = and(flag,2048)?1:0;
+
+  AS="."; NM=".";
+  for(i=12;i<=NF;i++){
+    if($i ~ /^AS:i:/){AS=$i; sub(/^AS:i:/,"",AS)}
+    else if($i ~ /^NM:i:/){NM=$i; sub(/^NM:i:/,"",NM)}
+  }
+
+  print q, flag, is_sec, is_supp, r, pos, mapq, cigar, AS, NM
+}' \
+> "$DATA_PATH/check_seq/bwa/result/mapping_info_all"
+
 echo "=== process4: finishing fastq merge and remapping ==="
 date
 echo "=== process5: making a list of insertion positions ==="
