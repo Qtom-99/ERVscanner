@@ -16,6 +16,8 @@ def create_position_sample_matrix(data_file, samples_file, output_file):
     position_mapping = {old_pos: f'POS{i+1}' for i, old_pos in enumerate(df['Position'].cat.categories)}
     df['Position'] = df['Position'].map(position_mapping)
 
+
+
     # サンプルリストをデータフレームに変換して全サンプルを含める
     samples_df = pd.DataFrame(samples, columns=['Sample'])
 
