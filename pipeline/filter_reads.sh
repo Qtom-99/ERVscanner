@@ -52,7 +52,7 @@ eval $(awk -F: '
 while read line
 do
 date
-echo "=== process1: SAMPLE:${line} estracting ERV regions ==="
+echo "=== process1: SAMPLE:${line} extracting ERV regions ==="
 samtools view -@ "$NCORE" -T "$REF_GENOME" -L $DATA_PATH/$QUERY_BED -P -o $DATA_PATH/sampledata/${line}/${line}_dfamallhit_overlap.bam -O BAM "$INPUT_PATH"/${line}."$INPUT_TYPE"
 echo "=== process1: SAMPLE:${line} estracting ERV regions: finished ==="
 date
