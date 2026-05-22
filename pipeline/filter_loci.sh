@@ -44,7 +44,7 @@ awk -F'\t' 'BEGIN{OFS="\t"} NR==FNR{map[$2]=$3; next} {if($2 in map){$2=map[$2]}
 cut -f 1,10 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt > $DATA_PATH/check_seq/master_file/pos_sample
 sort -V -k1,1 -k2,2 $DATA_PATH/check_seq/master_file/pos_sample | uniq > $DATA_PATH/check_seq/master_file/pos_sample_uniq
 awk 'NR==FNR {a[$1]; next} ($1 in a)' $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call_pos_sorted.txt $DATA_PATH/check_seq/master_file/pos_sample_uniq > $DATA_PATH/check_seq/master_file/pos_sample_uniq_filtered
-python3 $PY_PATH/make01table.py $DATA_PATH/check_seq/master_file/pos_sample_uniq $SAMPLE $DATA_PATH/01table/allsample_01table.tsv
+python3 $PY_PATH/make01table.py $DATA_PATH/check_seq/master_file/pos_sample_uniq_filtered $SAMPLE $DATA_PATH/01table/allsample_01table.tsv
 python3 $PY_PATH/extract_major_pos.py $DATA_PATH/01table/allsample_01table.tsv $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call_pos_sorted.txt $DATA_PATH/01table/allsample_01table_filtered.tsv
 date
 echo "=== process7: filtering loci by checking the insertion contents and directions: finished extracting loci ==="
