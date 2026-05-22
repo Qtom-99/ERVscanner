@@ -35,4 +35,4 @@ MAPQ_THRESHOLD: 30
 # Threshold of the number of uniqly mapped reads to define read culster
 CLUSTER_THRESHOLD: 5
 # Threthold for filtering loci. The fraction of consistent insertion contents and directions in merged dataset
-IDENTITY_THRESHOLD: 0.7
+IDENTITY_THRESHOLD: 4
