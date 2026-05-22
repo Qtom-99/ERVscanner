@@ -326,16 +326,23 @@ def main():
     ap.add_argument("bam", help="qname-sorted BAM mapped to repeats (reference_name=repeat)")
     ap.add_argument("strand_file", help="strand.tsv or .csv (POS, qname, strand)")
     ap.add_argument("out_tsv", help="output TSV")
+    ap.add_argument(
+        "min_support",
+        nargs="?",
+        type=int,
+        default=4,# 4 means less than
+        help="minimum support to call insertion. Default: 4"
+    )
+
     ap.add_argument("--allow-secondary", action="store_true", default=True,
                     help="include secondary/supplementary (default: include)")
     ap.add_argument("--pair-mode", choices=["any", "read1"], default="any",
                     help="any: count any alignment (default). read1: only read1 (if flags are reliable).")
-    ap.add_argument("--min-support", type=int, default=4,
-                help="minimum support to call insertion (<=3 => NA). default: 4")
     ap.add_argument("--max-span", type=int, default=1000,
-                help="if adopted L or R span >= this, call NA. default: 1000")
+                    help="if adopted L or R span >= this, call NA. default: 1000")
     ap.add_argument("--out-call", default=None,
-                help="output TSV for called insertion per POS (default: out_tsv + '.call.tsv')")
+                    help="output TSV for called insertion per POS (default: out_tsv + '.call.tsv')")
+
     args = ap.parse_args()
 
     raw_tsv = run_pipeline(
@@ -345,9 +352,17 @@ def main():
         allow_secondary=args.allow_secondary,
         pair_mode=args.pair_mode,
     )
+
     base = raw_tsv.removesuffix(".tsv")
     out_call = args.out_call if args.out_call is not None else (base + ".call.tsv")
-    run_calling_from_tsv(raw_tsv, out_call_tsv=out_call, min_support=args.min_support, max_span=args.max_span)
+
+    run_calling_from_tsv(
+        raw_tsv,
+        out_call_tsv=out_call,
+        min_support=args.min_support,
+        max_span=args.max_span
+    )
+
 
 
 if __name__ == "__main__":
