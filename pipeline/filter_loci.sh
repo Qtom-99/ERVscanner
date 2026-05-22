@@ -36,7 +36,7 @@ cat $DATA_PATH/check_seq/master_file/sampledata/*strand.tsv > $DATA_PATH/check_s
 sort -k5,5 $DATA_PATH/check_seq/master_file/allsample_data_merge.csv > $DATA_PATH/check_seq/master_file/allsample_data_merge_sort.csv
 paste $DATA_PATH/check_seq/master_file/allsample_data_merge_sort.csv $DATA_PATH/check_seq/bwa/result/mapping_info_sort > $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master.txt
 sort -V -k1,1 -k11,11 $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master.txt > $DATA_PATH/check_seq/master_file/allsample_ERVinfo_master_sort.txt
-python3 $PY_PATH/identify_family.py $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.qnamesort.bam $DATA_PATH/check_seq/master_file/allsample_data_merge.tsv $DATA_PATH/check_seq/master_file/repeat_per_POS_info.tsv
+python3 $PY_PATH/identify_family.py $DATA_PATH/check_seq/bwa/result/allsample_to_DfamERV.all.qnamesort.bam $DATA_PATH/check_seq/master_file/allsample_data_merge.tsv $DATA_PATH/check_seq/master_file/repeat_per_POS_info.tsv $IDENTITY_THRESHOLD
 sort -V -k1,1 $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call_pos.txt > $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call_pos_sorted.txt
 awk -F'\t' ' NR==1 {next} $2!="NA" { split($2, a, "::"); print $1 "\t" a[1] } ' $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call.tsv > $DATA_PATH/check_seq/master_file/allsample_ervname.tsv
 awk -F'\t' '{print $1 "\t" $5}' $DATA_PATH/check_seq/master_file/repeat_per_POS_info.call.tsv > $DATA_PATH/check_seq/master_file/allsample_strand.tsv
