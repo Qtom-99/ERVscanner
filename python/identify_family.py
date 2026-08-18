@@ -317,9 +317,17 @@ def run_calling_from_tsv(in_tsv: str, out_call_tsv: str, min_support: int = 4, m
     called = called[called["called_repeat"] != 'NA']
     
     called.to_csv(out_call_tsv, sep="\t", index=False)
+
     called_pos = called["POS"]
-    base = out_call_tsv.removesuffix(".tsv")
-    called_pos.to_csv(base+"_pos.txt", sep="\t", index=False, header=False)
+    if out_call_tsv.endswith(".call.tsv"):
+        pos_out = out_call_tsv[:-len(".call.tsv")] + "_pos.txt"
+    elif out_call_tsv.endswith(".tsv"):
+        pos_out = out_call_tsv[:-4] + "_pos.txt"
+    else:
+        pos_out = out_call_tsv + "_pos.txt"
+
+    called_pos.to_csv(pos_out, sep="\t", index=False, header=False)
+    return out_call_tsv, pos_out
     
 def main():
     ap = argparse.ArgumentParser()
@@ -334,8 +342,19 @@ def main():
         help="minimum support to call insertion. Default: 4"
     )
 
-    ap.add_argument("--allow-secondary", action="store_true", default=True,
-                    help="include secondary/supplementary (default: include)")
+    ap.add_argument(
+        "--allow-secondary",
+        dest="allow_secondary",
+        action="store_true",
+        help="include secondary/supplementary alignments"
+    )
+    ap.add_argument(
+        "--no-secondary",
+        dest="allow_secondary",
+        action="store_false",
+        help="exclude secondary/supplementary alignments"
+    )
+    ap.set_defaults(allow_secondary=True)
     ap.add_argument("--pair-mode", choices=["any", "read1"], default="any",
                     help="any: count any alignment (default). read1: only read1 (if flags are reliable).")
     ap.add_argument("--max-span", type=int, default=1000,
@@ -353,7 +372,7 @@ def main():
         pair_mode=args.pair_mode,
     )
 
-    base = raw_tsv.removesuffix(".tsv")
+    base = raw_tsv[:-4] if raw_tsv.endswith(".tsv") else raw_tsv
     out_call = args.out_call if args.out_call is not None else (base + ".call.tsv")
 
     run_calling_from_tsv(
