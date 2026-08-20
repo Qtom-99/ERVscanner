@@ -171,6 +171,7 @@ The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 ## Change log
 
 #### 2026/8/20
+v1.0.0 was releaed.
 Some bugs in the python scripts were fixed.
 
 #### 2026/2/19
