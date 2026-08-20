@@ -170,6 +170,9 @@ The final output for the insertions in MRs is stored in `<DATA_PATH>/vcf`.
 
 ## Change log
 
+#### 2026/8/20
+Some bugs in the python scripts were fixed.
+
 #### 2026/2/19
 The pipeline identifying insertions within MR has been deprecated.
 Logics to identify the insertion contents were slightly changed, which yield less false positives in our validation test.
